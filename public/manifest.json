@@ -1,0 +1,16 @@
+{
+  "name": "拜托待办",
+  "short_name": "拜托",
+  "description": "积累信誉，成就自我 - 待办管理应用",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

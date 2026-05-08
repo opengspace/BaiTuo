@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --quadrant-urgent-important: 220 38 38;
+    --quadrant-not-urgent-important: 245 158 11;
+    --quadrant-urgent-not-important: 59 130 246;
+    --quadrant-not-urgent-not-important: 107 114 128;
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-900 antialiased;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600
+           transition-colors font-medium shadow-sm hover:shadow-md;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300
+           transition-colors font-medium;
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-gray-100 p-4;
+  }
+
+  .quadrant-zone {
+    @apply rounded-xl p-4 min-h-[200px] transition-all duration-200;
+  }
+
+  .quadrant-zone:hover {
+    @apply shadow-md;
+  }
+
+  .todo-card {
+    @apply bg-white rounded-lg shadow-sm border-l-4 p-3 cursor-grab
+           hover:shadow-md transition-shadow active:cursor-grabbing;
+  }
+}
+
+@layer utilities {
+  .drag-overlay {
+    @apply opacity-80 shadow-xl transform scale-105;
+  }
+}
