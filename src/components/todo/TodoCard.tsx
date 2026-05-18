@@ -2,8 +2,8 @@ import { cn } from '@/utils'
 import { Todo, QUADRANT_COLORS, DIFFICULTY_LABELS } from '@/types'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { formatDueDate, getOverdueText, isOverdue } from '@/utils'
-import { Clock, User, Check, MoreHorizontal } from 'lucide-react'
+import { formatDueDate, getOverdueText, isOverdue, formatCreationTime } from '@/utils'
+import { Clock, User, Check, MoreHorizontal, PlusCircle } from 'lucide-react'
 import { useState } from 'react'
 import { Badge } from '@/components/common'
 
@@ -136,6 +136,12 @@ export function TodoCard({
         <Badge className={difficultyInfo.color}>
           {difficultyInfo.label}
         </Badge>
+
+        {/* 创建时间 */}
+        <div className="flex items-center gap-1 text-xs text-gray-400">
+          <PlusCircle className="w-3 h-3" />
+          <span>{formatCreationTime(todo.createdAt)}</span>
+        </div>
 
         {todo.dueDate && (
           <div className={cn(

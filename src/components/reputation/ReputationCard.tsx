@@ -1,9 +1,11 @@
 import { cn } from '@/utils'
 import { useReputationStore } from '@/store'
 import { LEVEL_DEFINITIONS, ACHIEVEMENTS, Achievement } from '@/types'
-import { Trophy, Flame, Target, Clock, TrendingUp } from 'lucide-react'
+import { Trophy, Flame, Target, Clock, TrendingUp, ChevronRight } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 export function ReputationCard() {
+  const navigate = useNavigate()
   const { total, level, title, stats } = useReputationStore()
 
   const currentLevel = LEVEL_DEFINITIONS.find(l => l.level === level) || LEVEL_DEFINITIONS[0]
@@ -75,6 +77,15 @@ export function ReputationCard() {
           </div>
         </div>
       </div>
+
+      {/* 查看明细按钮 */}
+      <button
+        onClick={() => navigate('/reputation/detail')}
+        className="mt-4 w-full flex items-center justify-center gap-1 py-2 text-sm text-primary-500 hover:text-primary-600 bg-primary-50 hover:bg-primary-100 rounded-lg transition-colors"
+      >
+        查看成就明细
+        <ChevronRight className="w-4 h-4" />
+      </button>
     </div>
   )
 }

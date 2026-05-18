@@ -47,3 +47,11 @@ export function getOverdueText(timestamp: number): string {
 export function generateId(): string {
   return crypto.randomUUID()
 }
+
+export function formatCreationTime(timestamp: number): string {
+  const diffHours = (Date.now() - timestamp) / (1000 * 60 * 60)
+  if (diffHours > 24) {
+    return format(new Date(timestamp), 'MM/dd HH:mm', { locale: zhCN })
+  }
+  return formatDistanceToNow(timestamp, { addSuffix: true, locale: zhCN })
+}

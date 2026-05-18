@@ -3,20 +3,23 @@ import { useTodoStore, useReputationStore } from '@/store'
 import { Header, Sidebar } from '@/components/layout'
 import { MatrixGrid, TodoForm } from '@/components/todo'
 import { ReputationCard, AchievementList } from '@/components/reputation'
+import { SettingsModal } from '@/components/settings'
 import { Quadrant, Todo, CreateTodoInput } from '@/types'
 import { calculateCompletionReward } from '@/types/reputation'
 import { exportData, importData } from '@/services/export'
 import { todoRepository, reputationRepository } from '@/services/db'
+import { runDailyCheck } from '@/services/dailyCheck'
 
 type ViewMode = 'matrix' | 'list' | 'today' | 'completed'
 
 export default function HomePage() {
-  const { init, todos, addTodo, completeTodo, moveTodo, deleteTodo, updateTodo, fetchTodos } = useTodoStore()
+  const { init, todos, addTodo, completeTodo, moveTodo, deleteTodo, updateTodo, fetchTodos, initialized } = useTodoStore()
   const { init: initReputation, addRecord, refresh } = useReputationStore()
 
   const [activeView, setActiveView] = useState<ViewMode>('matrix')
   const [activeQuadrant, setActiveQuadrant] = useState<Quadrant | null>(null)
   const [showTodoForm, setShowTodoForm] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
   const [defaultQuadrant, setDefaultQuadrant] = useState<Quadrant>('not-urgent-important')
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null)
   const [showReward, setShowReward] = useState<{ value: number; visible: boolean }>({ value: 0, visible: false })
@@ -26,6 +29,17 @@ export default function HomePage() {
     init()
     initReputation()
   }, [init, initReputation])
+
+  // 每日检查：等待 todos 加载后执行
+  useEffect(() => {
+    if (initialized && todos.length > 0) {
+      runDailyCheck(todos).then(result => {
+        if (result.checked && result.penaltiesApplied.length > 0) {
+          refresh()
+        }
+      })
+    }
+  }, [initialized])
 
   const handleAddTodo = (quadrant: Quadrant) => {
     setDefaultQuadrant(quadrant)
@@ -136,7 +150,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <Header onExport={handleExport} onImport={handleImport} />
+      <Header onExport={handleExport} onImport={handleImport} onOpenSettings={() => setShowSettings(true)} />
 
       {/* 积分动画 */}
       {showReward.visible && (
@@ -247,6 +261,11 @@ export default function HomePage() {
         onSubmit={editingTodo ? handleUpdateTodo : handleCreateTodo}
         defaultQuadrant={defaultQuadrant}
         editTodo={editingTodo}
+      />
+
+      <SettingsModal
+        open={showSettings}
+        onClose={() => setShowSettings(false)}
       />
     </div>
   )
