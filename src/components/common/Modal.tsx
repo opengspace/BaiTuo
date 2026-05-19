@@ -38,6 +38,7 @@ export function Modal({ open, onClose, title, children, size = 'md' }: ModalProp
         ref={ref}
         className={cn(
           'relative bg-white rounded-xl shadow-xl p-6 w-full mx-4',
+          'max-h-[85vh] overflow-y-auto',
           sizes[size]
         )}
       >

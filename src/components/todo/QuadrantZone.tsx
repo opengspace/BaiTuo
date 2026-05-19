@@ -54,13 +54,13 @@ export function QuadrantZone({
     <div
       ref={setNodeRef}
       className={cn(
-        'quadrant-zone border-2 flex flex-col min-h-[300px] transition-all duration-200',
+        'quadrant-zone border-2 flex flex-col transition-all duration-200',
         QUADRANT_BG_COLORS[quadrant],
         isOver && 'ring-4 ring-primary-400 ring-opacity-50 bg-opacity-80 scale-[1.01]'
       )}
     >
       {/* 标题栏 */}
-      <div className={cn('px-3 py-2 rounded-t-lg flex items-center justify-between', QUADRANT_HEADER_COLORS[quadrant])}>
+      <div className={cn('px-3 py-2 rounded-t-lg flex items-center justify-between shrink-0', QUADRANT_HEADER_COLORS[quadrant])}>
         <div>
           <h3 className="font-semibold">{QUADRANT_LABELS[quadrant]}</h3>
           <p className="text-xs opacity-80">{QUADRANT_HINTS[quadrant]}</p>
@@ -70,8 +70,8 @@ export function QuadrantZone({
         </span>
       </div>
 
-      {/* 待办列表 */}
-      <div className="flex-1 p-3 overflow-auto">
+      {/* 待办列表 - 独立滚动 */}
+      <div className="flex-1 p-3 overflow-y-auto min-h-0">
         <SortableContext
           items={todos.map(t => t.id)}
           strategy={verticalListSortingStrategy}
@@ -107,7 +107,7 @@ export function QuadrantZone({
       {onAddTodo && (
         <button
           onClick={() => onAddTodo(quadrant)}
-          className="flex items-center justify-center gap-1 px-3 py-2 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 border-t border-gray-200 transition-colors"
+          className="flex items-center justify-center gap-1 px-3 py-2 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 border-t border-gray-200 transition-colors shrink-0"
         >
           <Plus className="w-4 h-4" />
           添加待办

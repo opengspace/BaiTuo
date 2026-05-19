@@ -1,7 +1,7 @@
 import { cn } from '@/utils'
 import { QUADRANT_LABELS, Quadrant } from '@/types'
 import { useTodoStore, useReputationStore } from '@/store'
-import { LayoutGrid, List, Calendar, CheckCircle2 } from 'lucide-react'
+import { LayoutGrid, List, Calendar, CheckCircle2, Trophy } from 'lucide-react'
 
 type ViewMode = 'matrix' | 'list' | 'today' | 'completed'
 
@@ -10,6 +10,7 @@ interface SidebarProps {
   onViewChange: (view: ViewMode) => void
   activeQuadrant?: Quadrant | null
   onQuadrantChange?: (quadrant: Quadrant | null) => void
+  onOpenReputationDetail?: () => void
 }
 
 export function Sidebar({
@@ -17,9 +18,10 @@ export function Sidebar({
   onViewChange,
   activeQuadrant,
   onQuadrantChange,
+  onOpenReputationDetail,
 }: SidebarProps) {
   const { todos } = useTodoStore()
-  const { stats } = useReputationStore()
+  const { total, level, stats } = useReputationStore()
 
   const pendingTodos = todos.filter(t => t.status !== 'completed' && t.status !== 'cancelled')
   const completedTodos = todos.filter(t => t.status === 'completed')
@@ -46,8 +48,8 @@ export function Sidebar({
   }
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-100 h-full flex flex-col">
-      <div className="p-4 flex-1 overflow-auto">
+    <aside className="w-64 bg-white border-r border-gray-100 flex flex-col shrink-0">
+      <div className="p-4 flex-1 overflow-y-auto">
         {/* 视图切换 */}
         <div className="space-y-1">
           {views.map((view) => (
@@ -109,6 +111,22 @@ export function Sidebar({
           </div>
         </div>
       </div>
+
+      {/* 成就入口 - 固定在底部 */}
+      {onOpenReputationDetail && (
+        <div className="p-4 border-t border-gray-100 shrink-0">
+          <button
+            onClick={onOpenReputationDetail}
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg bg-primary-50 text-primary-600 hover:bg-primary-100 transition-colors"
+          >
+            <Trophy className="w-4 h-4" />
+            <div className="flex-1">
+              <p className="text-sm font-medium">成就明细</p>
+              <p className="text-xs text-primary-400">{total} 分 · Lv.{level}</p>
+            </div>
+          </button>
+        </div>
+      )}
     </aside>
   )
 }

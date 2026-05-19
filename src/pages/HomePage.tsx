@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useTodoStore, useReputationStore } from '@/store'
 import { Header, Sidebar } from '@/components/layout'
 import { MatrixGrid, TodoForm } from '@/components/todo'
@@ -9,10 +10,12 @@ import { calculateCompletionReward } from '@/types/reputation'
 import { exportData, importData } from '@/services/export'
 import { todoRepository, reputationRepository } from '@/services/db'
 import { runDailyCheck } from '@/services/dailyCheck'
+import { cn } from '@/utils'
 
 type ViewMode = 'matrix' | 'list' | 'today' | 'completed'
 
 export default function HomePage() {
+  const navigate = useNavigate()
   const { init, todos, addTodo, completeTodo, moveTodo, deleteTodo, updateTodo, fetchTodos, initialized } = useTodoStore()
   const { init: initReputation, addRecord, refresh } = useReputationStore()
 
@@ -176,9 +179,13 @@ export default function HomePage() {
           onViewChange={setActiveView}
           activeQuadrant={activeQuadrant}
           onQuadrantChange={setActiveQuadrant}
+          onOpenReputationDetail={() => navigate('/reputation/detail')}
         />
 
-        <main className="flex-1 p-6 overflow-auto">
+        <main className={cn(
+          'flex-1 p-6',
+          activeView === 'matrix' ? 'overflow-hidden' : 'overflow-auto'
+        )}>
           {activeView === 'matrix' && (
             <div className="h-full">
               <MatrixGrid
