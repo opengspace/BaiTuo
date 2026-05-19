@@ -84,9 +84,9 @@ export default function ReputationDetailPage() {
   const totalPages = Math.ceil(total / pageSize)
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-screen flex flex-col bg-gray-50">
       {/* Header */}
-      <header className="bg-white border-b border-gray-100 px-4 py-3 sticky top-0 z-40">
+      <header className="bg-white border-b border-gray-100 px-4 py-3 shrink-0">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate(-1)}
@@ -98,9 +98,10 @@ export default function ReputationDetailPage() {
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto p-6 space-y-6">
-        {/* 信誉概览 */}
-        <ReputationCard />
+      <main className="flex-1 overflow-y-auto">
+        <div className="max-w-3xl mx-auto p-6 space-y-6">
+          {/* 信誉概览 */}
+          <ReputationCard />
 
         {/* 类型汇总 */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
@@ -229,6 +230,7 @@ export default function ReputationDetailPage() {
             </div>
           )}
         </div>
+      </div>
       </main>
     </div>
   )

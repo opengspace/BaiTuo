@@ -152,7 +152,7 @@ export default function HomePage() {
   const displayTodos = activeView === 'completed' ? completedTodos : pendingTodos
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="h-screen flex flex-col bg-gray-50">
       <Header onExport={handleExport} onImport={handleImport} onOpenSettings={() => setShowSettings(true)} />
 
       {/* 积分动画 */}

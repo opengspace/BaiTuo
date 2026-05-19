@@ -48,8 +48,8 @@ export function Sidebar({
   }
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-100 flex flex-col shrink-0">
-      <div className="p-4 flex-1 overflow-y-auto">
+    <aside className="w-64 bg-white border-r border-gray-100 h-full flex flex-col shrink-0">
+      <div className="p-4 flex-1 overflow-y-auto min-h-0">
         {/* 视图切换 */}
         <div className="space-y-1">
           {views.map((view) => (
