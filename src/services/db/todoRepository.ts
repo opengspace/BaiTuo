@@ -92,7 +92,27 @@ export class TodoRepository {
     return updatedTodo
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string): Promise<Todo | undefined> {
+    // 逻辑删除：设置为 cancelled 状态
+    return this.update(id, {
+      status: 'cancelled',
+    })
+  }
+
+  async restore(id: string): Promise<Todo | undefined> {
+    // 恢复已删除的任务：设置为 pending 状态
+    return this.update(id, {
+      status: 'pending',
+    })
+  }
+
+  async getCancelled(): Promise<Todo[]> {
+    const db = await getDB()
+    return db.getAllFromIndex('todos', 'by-status', 'cancelled')
+  }
+
+  async hardDelete(id: string): Promise<void> {
+    // 真实删除：从数据库中永久移除
     const db = await getDB()
     await db.delete('todos', id)
   }

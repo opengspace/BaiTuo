@@ -13,7 +13,8 @@ interface TodoState {
   fetchTodos: () => Promise<void>
   addTodo: (input: CreateTodoInput) => Promise<Todo>
   updateTodo: (id: string, updates: UpdateTodoInput) => Promise<Todo | undefined>
-  deleteTodo: (id: string) => Promise<void>
+  deleteTodo: (id: string) => Promise<Todo | undefined>
+  restoreTodo: (id: string) => Promise<Todo | undefined>
   completeTodo: (id: string) => Promise<Todo | undefined>
   moveTodo: (id: string, quadrant: Quadrant) => Promise<Todo | undefined>
   reorderTodos: (quadrant: Quadrant, orderedIds: string[]) => Promise<void>
@@ -70,10 +71,23 @@ export const useTodoStore = create<TodoState>((set, get) => ({
   },
 
   deleteTodo: async (id) => {
-    await todoRepository.delete(id)
-    set((state) => ({
-      todos: state.todos.filter((t) => t.id !== id),
-    }))
+    const updated = await todoRepository.delete(id)
+    if (updated) {
+      set((state) => ({
+        todos: state.todos.map((t) => (t.id === id ? updated : t)),
+      }))
+    }
+    return updated
+  },
+
+  restoreTodo: async (id) => {
+    const updated = await todoRepository.restore(id)
+    if (updated) {
+      set((state) => ({
+        todos: state.todos.map((t) => (t.id === id ? updated : t)),
+      }))
+    }
+    return updated
   },
 
   completeTodo: async (id) => {

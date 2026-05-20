@@ -1,9 +1,9 @@
 import { cn } from '@/utils'
 import { QUADRANT_LABELS, Quadrant } from '@/types'
 import { useTodoStore, useReputationStore } from '@/store'
-import { LayoutGrid, List, Calendar, CheckCircle2, Trophy } from 'lucide-react'
+import { LayoutGrid, List, Calendar, CheckCircle2, Trophy, XCircle } from 'lucide-react'
 
-type ViewMode = 'matrix' | 'list' | 'today' | 'completed'
+type ViewMode = 'matrix' | 'list' | 'today' | 'completed' | 'cancelled'
 
 interface SidebarProps {
   activeView: ViewMode
@@ -25,6 +25,7 @@ export function Sidebar({
 
   const pendingTodos = todos.filter(t => t.status !== 'completed' && t.status !== 'cancelled')
   const completedTodos = todos.filter(t => t.status === 'completed')
+  const cancelledTodos = todos.filter(t => t.status === 'cancelled')
 
   const quadrantCounts = {
     'urgent-important': pendingTodos.filter(t => t.quadrant === 'urgent-important').length,
@@ -38,6 +39,7 @@ export function Sidebar({
     { id: 'list', label: '全部待办', icon: <List className="w-4 h-4" />, count: pendingTodos.length },
     { id: 'today', label: '今日待办', icon: <Calendar className="w-4 h-4" /> },
     { id: 'completed', label: '已完成', icon: <CheckCircle2 className="w-4 h-4" />, count: completedTodos.length },
+    { id: 'cancelled', label: '已取消', icon: <XCircle className="w-4 h-4" />, count: cancelledTodos.length },
   ]
 
   const quadrantColors: Record<Quadrant, string> = {

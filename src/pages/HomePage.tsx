@@ -9,14 +9,14 @@ import { Quadrant, Todo, CreateTodoInput } from '@/types'
 import { calculateCompletionReward } from '@/types/reputation'
 import { exportData, importData } from '@/services/export'
 import { todoRepository, reputationRepository } from '@/services/db'
-import { runDailyCheck } from '@/services/dailyCheck'
+import { runDailyCheck, handleCancelledPenalty } from '@/services/dailyCheck'
 import { cn } from '@/utils'
 
-type ViewMode = 'matrix' | 'list' | 'today' | 'completed'
+type ViewMode = 'matrix' | 'list' | 'today' | 'completed' | 'cancelled'
 
 export default function HomePage() {
   const navigate = useNavigate()
-  const { init, todos, addTodo, completeTodo, moveTodo, deleteTodo, updateTodo, fetchTodos, initialized } = useTodoStore()
+  const { init, todos, addTodo, completeTodo, moveTodo, deleteTodo, updateTodo, fetchTodos, initialized, restoreTodo } = useTodoStore()
   const { init: initReputation, addRecord, refresh } = useReputationStore()
 
   const [activeView, setActiveView] = useState<ViewMode>('matrix')
@@ -103,8 +103,19 @@ export default function HomePage() {
   }
 
   const handleDeleteTodo = async (id: string) => {
-    if (confirm('确定删除这个待办？')) {
+    const todo = todos.find(t => t.id === id)
+    if (!todo) return
+
+    if (confirm('确定取消这个待办？取消会扣除部分信誉值。')) {
       await deleteTodo(id)
+
+      // 处理取消任务惩罚
+      const penaltyResult = await handleCancelledPenalty(todo)
+      if (penaltyResult) {
+        setShowReward({ value: -penaltyResult.penalty, visible: true })
+        setTimeout(() => setShowReward({ value: 0, visible: false }), 1500)
+        await refresh()
+      }
     }
   }
 
@@ -148,8 +159,15 @@ export default function HomePage() {
 
   const pendingTodos = filteredTodos.filter(t => t.status !== 'completed' && t.status !== 'cancelled')
   const completedTodos = filteredTodos.filter(t => t.status === 'completed')
+  const cancelledTodos = filteredTodos.filter(t => t.status === 'cancelled')
 
-  const displayTodos = activeView === 'completed' ? completedTodos : pendingTodos
+  const displayTodos = activeView === 'completed' ? completedTodos
+    : activeView === 'cancelled' ? cancelledTodos
+    : pendingTodos
+
+  const handleRestoreTodo = async (id: string) => {
+    await restoreTodo(id)
+  }
 
   return (
     <div className="h-screen flex flex-col bg-gray-50">
@@ -205,18 +223,21 @@ export default function HomePage() {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                   <h2 className="font-semibold mb-4">
                     {activeView === 'list' ? '全部待办' :
-                     activeView === 'today' ? '今日待办' : '已完成'}
+                     activeView === 'today' ? '今日待办' :
+                     activeView === 'completed' ? '已完成' : '已取消'}
                   </h2>
 
                   {displayTodos.length === 0 ? (
                     <div className="text-center text-gray-400 py-12">
-                      <p>暂无待办</p>
-                      <button
-                        onClick={() => handleAddTodo('not-urgent-important')}
-                        className="mt-4 text-primary-500 hover:text-primary-600"
-                      >
-                        添加待办
-                      </button>
+                      <p>{activeView === 'cancelled' ? '暂无已取消的待办' : '暂无待办'}</p>
+                      {activeView !== 'cancelled' && (
+                        <button
+                          onClick={() => handleAddTodo('not-urgent-important')}
+                          className="mt-4 text-primary-500 hover:text-primary-600"
+                        >
+                          添加待办
+                        </button>
+                      )}
                     </div>
                   ) : (
                     <div className="space-y-3">
@@ -233,8 +254,21 @@ export default function HomePage() {
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-primary-500">+{todo.reputationValue}</span>
-                            {todo.status !== 'completed' && (
+                            <span className={cn(
+                              'text-xs',
+                              activeView === 'cancelled' ? 'text-red-500' : 'text-primary-500'
+                            )}>
+                              {activeView === 'cancelled' ? '已取消' : `+${todo.reputationValue}`}
+                            </span>
+                            {activeView === 'cancelled' && (
+                              <button
+                                onClick={() => handleRestoreTodo(todo.id)}
+                                className="text-xs text-primary-500 hover:text-primary-600"
+                              >
+                                恢复
+                              </button>
+                            )}
+                            {todo.status !== 'completed' && todo.status !== 'cancelled' && (
                               <button
                                 onClick={() => handleCompleteTodo(todo.id)}
                                 className="text-xs text-green-500 hover:text-green-600"
