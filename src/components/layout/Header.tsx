@@ -16,6 +16,7 @@ export function Header({ onOpenSettings, onExport, onImport }: HeaderProps) {
     <header className="bg-white border-b border-gray-100 px-4 py-3 sticky top-0 z-40">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
+          <img src="/logo.png" alt="拜托" className="w-8 h-8 rounded-lg" />
           <h1 className="text-xl font-bold text-primary-600">
             拜托
           </h1>
