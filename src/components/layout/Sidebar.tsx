@@ -1,9 +1,9 @@
 import { cn } from '@/utils'
 import { QUADRANT_LABELS, Quadrant } from '@/types'
 import { useTodoStore, useReputationStore } from '@/store'
-import { LayoutGrid, List, Calendar, CheckCircle2, Trophy, XCircle } from 'lucide-react'
+import { LayoutGrid, List, Calendar, CheckCircle2, Trophy, XCircle, Home } from 'lucide-react'
 
-type ViewMode = 'matrix' | 'list' | 'today' | 'completed' | 'cancelled'
+type ViewMode = 'matrix' | 'list' | 'today' | 'completed' | 'cancelled' | 'pixel-town'
 
 interface SidebarProps {
   activeView: ViewMode
@@ -36,6 +36,7 @@ export function Sidebar({
 
   const views: { id: ViewMode; label: string; icon: React.ReactNode; count?: number }[] = [
     { id: 'matrix', label: '四象限', icon: <LayoutGrid className="w-4 h-4" /> },
+    { id: 'pixel-town', label: '拜托小镇', icon: <Home className="w-4 h-4" /> },
     { id: 'list', label: '全部待办', icon: <List className="w-4 h-4" />, count: pendingTodos.length },
     { id: 'today', label: '今日待办', icon: <Calendar className="w-4 h-4" /> },
     { id: 'completed', label: '已完成', icon: <CheckCircle2 className="w-4 h-4" />, count: completedTodos.length },
@@ -59,16 +60,18 @@ export function Sidebar({
               key={view.id}
               onClick={() => onViewChange(view.id)}
               className={cn(
-                'w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors',
+                'w-full flex items-center px-3 py-2 rounded-lg transition-colors',
                 activeView === view.id
                   ? 'bg-primary-50 text-primary-600'
                   : 'text-gray-600 hover:bg-gray-50'
               )}
             >
-              {view.icon}
-              <span className="flex-1 text-sm font-medium">{view.label}</span>
+              <div className="flex items-center gap-3">
+                {view.icon}
+                <span className="text-sm font-medium">{view.label}</span>
+              </div>
               {view.count !== undefined && view.count > 0 && (
-                <span className="text-xs bg-gray-100 px-1.5 py-0.5 rounded">
+                <span className="ml-auto text-xs bg-gray-100 px-1.5 py-0.5 rounded">
                   {view.count}
                 </span>
               )}
@@ -85,16 +88,18 @@ export function Sidebar({
                 key={q}
                 onClick={() => onQuadrantChange?.(activeQuadrant === q ? null : q)}
                 className={cn(
-                  'w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors',
+                  'w-full flex items-center px-3 py-2 rounded-lg transition-colors',
                   activeQuadrant === q
                     ? 'bg-gray-100 text-gray-800'
                     : 'text-gray-600 hover:bg-gray-50'
                 )}
               >
-                <span className={cn('w-2 h-2 rounded-full', quadrantColors[q])} />
-                <span className="flex-1 text-sm">{QUADRANT_LABELS[q]}</span>
+                <div className="flex items-center gap-3">
+                  <span className={cn('w-2 h-2 rounded-full', quadrantColors[q])} />
+                  <span className="text-sm">{QUADRANT_LABELS[q]}</span>
+                </div>
                 {quadrantCounts[q] > 0 && (
-                  <span className="text-xs text-gray-400">{quadrantCounts[q]}</span>
+                  <span className="ml-auto text-xs text-gray-400">{quadrantCounts[q]}</span>
                 )}
               </button>
             ))}

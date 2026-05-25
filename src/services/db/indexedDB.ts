@@ -1,8 +1,8 @@
 import { openDB, IDBPDatabase } from 'idb'
-import { Todo, ReputationRecord, NotificationRecord, NotificationSettings } from '@/types'
+import { Todo, ReputationRecord, NotificationRecord, NotificationSettings, ComplaintRecord, AIConfig } from '@/types'
 
 const DB_NAME = 'baituo-db'
-const DB_VERSION = 1
+const DB_VERSION = 2
 
 interface BaituoDBSchema {
   todos: {
@@ -35,6 +35,18 @@ interface BaituoDBSchema {
   settings: {
     key: string
     value: NotificationSettings | number | string
+  }
+  complaint_records: {
+    key: string
+    value: ComplaintRecord
+    indexes: {
+      'by-characterId': string
+      'by-generatedAt': number
+    }
+  }
+  ai_config: {
+    key: string
+    value: AIConfig
   }
 }
 
@@ -72,6 +84,18 @@ export async function initDB(): Promise<IDBPDatabase<BaituoDBSchema>> {
       // 设置表
       if (!db.objectStoreNames.contains('settings')) {
         db.createObjectStore('settings', { keyPath: 'key' })
+      }
+
+      // 抱怨记录表
+      if (!db.objectStoreNames.contains('complaint_records')) {
+        const complaintStore = db.createObjectStore('complaint_records', { keyPath: 'id' })
+        complaintStore.createIndex('by-characterId', 'characterId')
+        complaintStore.createIndex('by-generatedAt', 'generatedAt')
+      }
+
+      // AI配置表
+      if (!db.objectStoreNames.contains('ai_config')) {
+        db.createObjectStore('ai_config', { keyPath: 'id' })
       }
     },
   })

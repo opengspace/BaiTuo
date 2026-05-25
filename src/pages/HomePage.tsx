@@ -1,10 +1,11 @@
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useTodoStore, useReputationStore } from '@/store'
+import { useTodoStore, useReputationStore, useComplaintStore } from '@/store'
 import { Header, Sidebar } from '@/components/layout'
 import { MatrixGrid, TodoForm } from '@/components/todo'
 import { ReputationCard, AchievementList } from '@/components/reputation'
 import { SettingsModal } from '@/components/settings'
+import { PixelTownView } from '@/components/pixel-town'
 import { Quadrant, Todo, CreateTodoInput } from '@/types'
 import { calculateCompletionReward } from '@/types/reputation'
 import { exportData, importData } from '@/services/export'
@@ -12,12 +13,13 @@ import { todoRepository, reputationRepository } from '@/services/db'
 import { runDailyCheck, handleCancelledPenalty } from '@/services/dailyCheck'
 import { cn } from '@/utils'
 
-type ViewMode = 'matrix' | 'list' | 'today' | 'completed' | 'cancelled'
+type ViewMode = 'matrix' | 'list' | 'today' | 'completed' | 'cancelled' | 'pixel-town'
 
 export default function HomePage() {
   const navigate = useNavigate()
   const { init, todos, addTodo, completeTodo, moveTodo, deleteTodo, updateTodo, fetchTodos, initialized, restoreTodo } = useTodoStore()
   const { init: initReputation, addRecord, refresh } = useReputationStore()
+  const { init: initComplaint } = useComplaintStore()
 
   const [activeView, setActiveView] = useState<ViewMode>('matrix')
   const [activeQuadrant, setActiveQuadrant] = useState<Quadrant | null>(null)
@@ -31,7 +33,8 @@ export default function HomePage() {
   useEffect(() => {
     init()
     initReputation()
-  }, [init, initReputation])
+    initComplaint()
+  }, [init, initReputation, initComplaint])
 
   // 每日检查：等待 todos 加载后执行
   useEffect(() => {
@@ -201,8 +204,10 @@ export default function HomePage() {
         />
 
         <main className={cn(
-          'flex-1 p-6',
-          activeView === 'matrix' ? 'overflow-hidden' : 'overflow-auto'
+          'flex-1',
+          activeView === 'matrix' || activeView === 'pixel-town'
+            ? 'overflow-hidden'
+            : 'overflow-auto p-6'
         )}>
           {activeView === 'matrix' && (
             <div className="h-full">
@@ -217,7 +222,13 @@ export default function HomePage() {
             </div>
           )}
 
-          {activeView !== 'matrix' && (
+          {activeView === 'pixel-town' && (
+            <div className="h-full">
+              <PixelTownView />
+            </div>
+          )}
+
+          {activeView !== 'matrix' && activeView !== 'pixel-town' && (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">

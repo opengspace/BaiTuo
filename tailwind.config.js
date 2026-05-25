@@ -6,6 +6,9 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        pixel: ['ZCOOL KuaiLe', 'cursive'],
+      },
       colors: {
         primary: {
           50: '#eef2ff',
