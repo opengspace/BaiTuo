@@ -10,8 +10,8 @@ interface PixelTownCanvasProps {
 
 // 网格单元大小（每个区块）
 const TILE_SIZE = 200
-const TILE_COLS = 10
-const TILE_ROWS = 8
+const TILE_COLS = 20
+const TILE_ROWS = 16
 
 // 虚拟小镇总尺寸
 const TOWN_WIDTH = TILE_SIZE * TILE_COLS
@@ -32,6 +32,7 @@ export function PixelTownCanvas({
   const [offset, setOffset] = useState({ x: 0, y: 0 })
   const isDraggingRef = useRef(false)
   const lastMouseRef = useRef({ x: 0, y: 0 })
+  const initialCentered = useRef(false)
 
   // 保持 characters 引用最新
   useEffect(() => {
@@ -176,6 +177,18 @@ export function PixelTownCanvas({
 
       canvas.width = container.clientWidth
       canvas.height = container.clientHeight
+
+      // 首次加载时居中显示小镇
+      if (!initialCentered.current) {
+        initialCentered.current = true
+        const centerX = (TOWN_WIDTH - canvas.width) / 2
+        const centerY = (TOWN_HEIGHT - canvas.height) / 2
+        setOffset({
+          x: Math.max(0, Math.min(TOWN_WIDTH - canvas.width, centerX)),
+          y: Math.max(0, Math.min(TOWN_HEIGHT - canvas.height, centerY)),
+        })
+      }
+
       render()
     }
 
@@ -312,27 +325,30 @@ function drawTownTiles(ctx: CanvasRenderingContext2D) {
   drawSkyGradient(ctx)
 }
 
+// 街道位置常量（适配 20x16 网格）
+const STREET_WIDTH = 50
+const H_STREETS = [TILE_SIZE * 5, TILE_SIZE * 11] // 横向街道 y 位置
+const V_STREETS = [TILE_SIZE * 5, TILE_SIZE * 14] // 纵向街道 x 位置
+
 // 草地区域定义（街道围成的区域）
-const GRASS_DISTRICTS = [
-  // 左上区
-  { x: 0, y: 0, width: TILE_SIZE * 2, height: TILE_SIZE * 2 },
-  // 中上区（街道右侧到下一条街道）
-  { x: TILE_SIZE * 2 + 50, y: 0, width: TILE_SIZE * 4 - 50, height: TILE_SIZE * 2 },
-  // 右上区
-  { x: TILE_SIZE * 6 + 50, y: 0, width: TILE_SIZE * 4 - 50, height: TILE_SIZE * 2 },
-  // 左中区
-  { x: 0, y: TILE_SIZE * 2 + 50, width: TILE_SIZE * 2, height: TILE_SIZE * 3 - 50 },
-  // 中中区
-  { x: TILE_SIZE * 2 + 50, y: TILE_SIZE * 2 + 50, width: TILE_SIZE * 4 - 50, height: TILE_SIZE * 3 - 50 },
-  // 右中区
-  { x: TILE_SIZE * 6 + 50, y: TILE_SIZE * 2 + 50, width: TILE_SIZE * 4 - 50, height: TILE_SIZE * 3 - 50 },
-  // 左下区
-  { x: 0, y: TILE_SIZE * 5 + 50, width: TILE_SIZE * 2, height: TILE_SIZE * 3 - 50 },
-  // 中下区
-  { x: TILE_SIZE * 2 + 50, y: TILE_SIZE * 5 + 50, width: TILE_SIZE * 4 - 50, height: TILE_SIZE * 3 - 50 },
-  // 右下区
-  { x: TILE_SIZE * 6 + 50, y: TILE_SIZE * 5 + 50, width: TILE_SIZE * 4 - 50, height: TILE_SIZE * 3 - 50 },
-]
+function buildDistricts() {
+  const hBounds = [0, ...H_STREETS.map(y => y + STREET_WIDTH), TOWN_HEIGHT]
+  const vBounds = [0, ...V_STREETS.map(x => x + STREET_WIDTH), TOWN_WIDTH]
+
+  const districts: { x: number; y: number; width: number; height: number }[] = []
+  for (let r = 0; r < hBounds.length - 1; r++) {
+    const yStart = r === 0 ? 0 : H_STREETS[r - 1] + STREET_WIDTH
+    const yEnd = r === hBounds.length - 2 ? TOWN_HEIGHT : H_STREETS[r]
+    for (let c = 0; c < vBounds.length - 1; c++) {
+      const xStart = c === 0 ? 0 : V_STREETS[c - 1] + STREET_WIDTH
+      const xEnd = c === vBounds.length - 2 ? TOWN_WIDTH : V_STREETS[c]
+      districts.push({ x: xStart, y: yStart, width: xEnd - xStart, height: yEnd - yStart })
+    }
+  }
+  return districts
+}
+
+const GRASS_DISTRICTS = buildDistricts()
 
 // 在草地区域内绘制6个房子（2行3列）
 function drawHousesInDistricts(ctx: CanvasRenderingContext2D) {
@@ -375,34 +391,40 @@ function drawHousesInDistricts(ctx: CanvasRenderingContext2D) {
 
 // 绘制街道网格
 function drawStreetGrid(ctx: CanvasRenderingContext2D) {
-  const streetWidth = 50
-
   // 横向街道
   ctx.fillStyle = '#909090'
-  ctx.fillRect(0, TILE_SIZE * 2, TOWN_WIDTH, streetWidth)
-  ctx.fillRect(0, TILE_SIZE * 5, TOWN_WIDTH, streetWidth)
+  for (const sy of H_STREETS) {
+    ctx.fillRect(0, sy, TOWN_WIDTH, STREET_WIDTH)
+  }
 
   // 纵向街道
-  ctx.fillRect(TILE_SIZE * 2, 0, streetWidth, TOWN_HEIGHT)
-  ctx.fillRect(TILE_SIZE * 6, 0, streetWidth, TOWN_HEIGHT)
+  for (const sx of V_STREETS) {
+    ctx.fillRect(sx, 0, STREET_WIDTH, TOWN_HEIGHT)
+  }
 
   // 街道中心线
   ctx.fillStyle = '#E8D878'
-  for (let x = 0; x < TOWN_WIDTH; x += 60) {
-    ctx.fillRect(x + 10, TILE_SIZE * 2 + 22, 30, 6)
-    ctx.fillRect(x + 10, TILE_SIZE * 5 + 22, 30, 6)
+  for (const sy of H_STREETS) {
+    for (let x = 0; x < TOWN_WIDTH; x += 60) {
+      ctx.fillRect(x + 10, sy + 22, 30, 6)
+    }
   }
-  for (let y = 0; y < TOWN_HEIGHT; y += 60) {
-    ctx.fillRect(TILE_SIZE * 2 + 22, y + 10, 6, 30)
-    ctx.fillRect(TILE_SIZE * 6 + 22, y + 10, 6, 30)
+  for (const sx of V_STREETS) {
+    for (let y = 0; y < TOWN_HEIGHT; y += 60) {
+      ctx.fillRect(sx + 22, y + 10, 6, 30)
+    }
   }
 
   // 人行道
   ctx.fillStyle = '#C0C0C0'
-  ctx.fillRect(0, TILE_SIZE * 2 - 10, TOWN_WIDTH, 10)
-  ctx.fillRect(0, TILE_SIZE * 5 + streetWidth, TOWN_WIDTH, 10)
-  ctx.fillRect(TILE_SIZE * 2 - 10, 0, 10, TOWN_HEIGHT)
-  ctx.fillRect(TILE_SIZE * 6 + streetWidth, 0, 10, TOWN_HEIGHT)
+  for (const sy of H_STREETS) {
+    ctx.fillRect(0, sy - 10, TOWN_WIDTH, 10)
+    ctx.fillRect(0, sy + STREET_WIDTH, TOWN_WIDTH, 10)
+  }
+  for (const sx of V_STREETS) {
+    ctx.fillRect(sx - 10, 0, 10, TOWN_HEIGHT)
+    ctx.fillRect(sx + STREET_WIDTH, 0, 10, TOWN_HEIGHT)
+  }
 }
 
 // 绘制像素房子

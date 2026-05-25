@@ -49,27 +49,26 @@ export function useCharacters() {
         todoCount: todoList.length,
       })
 
-      // 计算位置（根据索引分布在不同区域）
-      // 区域分配：按照情绪分散在不同位置
+      // 计算位置（根据索引分布在街道附近）
       let gridX: number
       let gridY: number
 
       if (emotion === 'happy') {
-        // 开心的人：放在上部区域（避开左上角介绍区）
-        gridX = 1 + (index % 3)
-        gridY = 0
+        // 开心的人：放在上方区域（避开左上角介绍区）
+        gridX = 1 + (index % 4)
+        gridY = 0 + Math.floor(index / 4) % 5
       } else if (emotion === 'neutral') {
-        // 平静的人：放在右上区域
-        gridX = 4 + (index % 3)
-        gridY = 0
+        // 平静的人：放在中间区域
+        gridX = 6 + (index % 4)
+        gridY = 6 + Math.floor(index / 4) % 5
       } else if (emotion === 'sad') {
-        // 难过的人：放在左下区域（靠近道路）
-        gridX = (index % 3)
-        gridY = 2
+        // 难过的人：放在左下区域
+        gridX = 0 + (index % 4)
+        gridY = 12 + Math.floor(index / 4) % 4
       } else {
-        // 愤怒的人：放在右下区域（远离中心）
-        gridX = 4 + (index % 3)
-        gridY = 2
+        // 愤怒的人：放在右下区域
+        gridX = 15 + (index % 4)
+        gridY = 12 + Math.floor(index / 4) % 4
       }
 
       characters.push({
