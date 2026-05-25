@@ -21,7 +21,7 @@ export function CharacterDetailPanel({
   const [historyComplaints, setHistoryComplaints] = useState<any[]>([])
   const [showHistory, setShowHistory] = useState(false)
 
-  // 获取该请求人的待办详情
+  // 获取该拜托人的待办详情
   const characterTodos = todos.filter(t => character.todos.includes(t.id))
 
   // 加载抱怨内容

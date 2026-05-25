@@ -3,9 +3,9 @@ export type EmotionLevel = 'happy' | 'neutral' | 'sad' | 'angry'
 
 /** 小人实体 */
 export interface PixelCharacter {
-  id: string              // 基于请求人名生成唯一ID
-  name: string            // 请求人名称
-  todos: string[]         // 该请求人的所有未完成待办ID
+  id: string              // 基于拜托人名生成唯一ID
+  name: string            // 拜托人名称
+  todos: string[]         // 该拜托人的所有未完成待办ID
   overdueCount: number    // 逾期待办数量
   overdueDays: number     // 最大逾期天数
   emotion: EmotionLevel   // 当前情绪等级
@@ -18,7 +18,7 @@ export interface PixelCharacter {
 export interface ComplaintRecord {
   id: string
   characterId: string     // 关联的小人ID
-  requesterName: string   // 请求人名
+  requesterName: string   // 拜托人名
   content: string         // 抱怨内容
   generatedAt: number     // 生成时间戳
   emotion: EmotionLevel   // 当时情绪

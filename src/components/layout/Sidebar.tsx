@@ -35,8 +35,8 @@ export function Sidebar({
   }
 
   const views: { id: ViewMode; label: string; icon: React.ReactNode; count?: number }[] = [
-    { id: 'matrix', label: '四象限', icon: <LayoutGrid className="w-4 h-4" /> },
     { id: 'pixel-town', label: '拜托小镇', icon: <Home className="w-4 h-4" /> },
+    { id: 'matrix', label: '四象限', icon: <LayoutGrid className="w-4 h-4" /> },
     { id: 'list', label: '全部待办', icon: <List className="w-4 h-4" />, count: pendingTodos.length },
     { id: 'today', label: '今日待办', icon: <Calendar className="w-4 h-4" /> },
     { id: 'completed', label: '已完成', icon: <CheckCircle2 className="w-4 h-4" />, count: completedTodos.length },

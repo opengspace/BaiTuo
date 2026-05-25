@@ -113,22 +113,24 @@ export function PixelTownCanvas({
         CHARACTER_PIXEL_SIZE
       )
 
-      // 名字标签（头顶显示）
-      const nameY = screenY - 12 // 名字在头顶上方
+      // 名字标签（头顶显示，视觉居中偏左修正）
+      const charCenterX = screenX + (CHARACTER_WIDTH * CHARACTER_PIXEL_SIZE) / 2 - 8
+      const nameY = screenY - 10
       drawNameLabel(
         ctx,
         char.name,
-        screenX + (CHARACTER_WIDTH * CHARACTER_PIXEL_SIZE) / 2,
+        charCenterX,
         nameY,
         CHARACTER_PIXEL_SIZE
       )
 
-      // 抱怨气泡（名字上方，如果有抱怨）
+      // 抱怨气泡（人物右侧偏上，带浮动动画）
       if (char.hasNewComplaint) {
+        const bobOffset = Math.sin(Date.now() / 300) * 3
         drawBubbleIndicator(
           ctx,
-          screenX / CHARACTER_PIXEL_SIZE + CHARACTER_WIDTH / 2 - 3,
-          nameY / CHARACTER_PIXEL_SIZE - 5,
+          screenX + (CHARACTER_WIDTH * CHARACTER_PIXEL_SIZE) + 4,
+          screenY + 8 + bobOffset,
           CHARACTER_PIXEL_SIZE
         )
       }
@@ -226,15 +228,12 @@ export function PixelTownCanvas({
       const charX = char.position.x * TILE_SIZE + TILE_SIZE / 2 - (CHARACTER_WIDTH * CHARACTER_PIXEL_SIZE) / 2
       const charY = char.position.y * TILE_SIZE + TILE_SIZE / 2 - (CHARACTER_HEIGHT * CHARACTER_PIXEL_SIZE) / 2
 
-      // 检测气泡点击（如果有抱怨）
+      // 检测气泡点击（如果有抱怨）- 气泡在人物右侧
       if (char.hasNewComplaint) {
-        const nameY = charY - 12 // 名字位置（小镇坐标）
-        // 气泡位置计算（与绘制位置匹配）
-        const bubbleCenterX = charX + (CHARACTER_WIDTH * CHARACTER_PIXEL_SIZE) / 2
-        const bubbleX = bubbleCenterX - CHARACTER_PIXEL_SIZE * 6 // 左边界
-        const bubbleY = nameY - CHARACTER_PIXEL_SIZE * 13 // 上边界
-        const bubbleWidth = CHARACTER_PIXEL_SIZE * 10
-        const bubbleHeight = CHARACTER_PIXEL_SIZE * 14 // 包含尾巴
+        const bubbleX = charX + (CHARACTER_WIDTH * CHARACTER_PIXEL_SIZE) + 4 - 6 // 含尾巴
+        const bubbleY = charY - 4 - 9 // 居中偏上
+        const bubbleWidth = 28 + 6 // 含尾巴
+        const bubbleHeight = 18
 
         if (
           clickX >= bubbleX &&

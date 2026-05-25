@@ -7,12 +7,12 @@ export function useCharacters() {
   const { todos } = useTodoStore()
 
   return useMemo(() => {
-    // 获取所有未完成的待办（排除已完成和已取消，且有请求人）
+    // 获取所有未完成的待办（排除已完成和已取消，且有拜托人）
     const pendingTodos = todos.filter(
       t => t.status !== 'completed' && t.status !== 'cancelled' && t.requester
     )
 
-    // 按请求人分组
+    // 按拜托人分组
     const requesterMap = new Map<string, typeof pendingTodos>()
 
     for (const todo of pendingTodos) {
@@ -55,8 +55,8 @@ export function useCharacters() {
       let gridY: number
 
       if (emotion === 'happy') {
-        // 开心的人：放在左上区域（房子前面）
-        gridX = (index % 3)
+        // 开心的人：放在上部区域（避开左上角介绍区）
+        gridX = 1 + (index % 3)
         gridY = 0
       } else if (emotion === 'neutral') {
         // 平静的人：放在右上区域

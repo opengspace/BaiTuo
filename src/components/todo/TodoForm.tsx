@@ -158,7 +158,7 @@ export function TodoForm({ open, onClose, onSubmit, defaultQuadrant, editTodo }:
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             <User className="w-3 h-3 inline mr-1" />
-            请求人（谁求你办这件事）
+            拜托人（谁求你办这件事）
           </label>
           <input
             type="text"

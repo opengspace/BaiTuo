@@ -71,33 +71,38 @@ function drawRoundRect(
   ctx.closePath()
 }
 
-/** 绘制对话气泡图标（指向下方的小气泡） */
+/** 绘制对话气泡图标（人物右侧，带尾巴指向左边） */
 export function drawBubbleIndicator(
   ctx: CanvasRenderingContext2D,
   x: number,
   y: number,
-  pixelSize: number = 3
+  _pixelSize: number = 3
 ): void {
-  // 气泡主体（小圆角矩形）
+  const bw = 28
+  const bh = 18
+  const bx = x
+  const by = y - bh / 2
+
+  // 气泡主体
   ctx.fillStyle = '#FFE066'
-  drawRoundRect(ctx, x * pixelSize - pixelSize * 3, y * pixelSize - pixelSize * 8, pixelSize * 10, pixelSize * 6, 3)
+  drawRoundRect(ctx, bx, by, bw, bh, 4)
   ctx.fill()
 
-  // 气泡小尾巴（指向下方）
-  ctx.fillStyle = '#FFE066'
+  // 小尾巴（指向左边人物）
   ctx.beginPath()
-  ctx.moveTo(x * pixelSize + pixelSize * 1, y * pixelSize - pixelSize * 2)
-  ctx.lineTo(x * pixelSize + pixelSize * 3, y * pixelSize - pixelSize * 2)
-  ctx.lineTo(x * pixelSize + pixelSize * 2, y * pixelSize)
+  ctx.moveTo(bx, by + bh * 0.4)
+  ctx.lineTo(bx - 6, by + bh * 0.5)
+  ctx.lineTo(bx, by + bh * 0.6)
   ctx.closePath()
   ctx.fill()
 
-  // 气泡内的随意符号（三个小点表示有话说）
+  // 三个小点
   ctx.fillStyle = '#666666'
+  const dotY = by + bh / 2
   ctx.beginPath()
-  ctx.arc(x * pixelSize - pixelSize * 1, y * pixelSize - pixelSize * 5, pixelSize * 1, 0, Math.PI * 2)
-  ctx.arc(x * pixelSize + pixelSize * 2, y * pixelSize - pixelSize * 5, pixelSize * 1, 0, Math.PI * 2)
-  ctx.arc(x * pixelSize + pixelSize * 5, y * pixelSize - pixelSize * 5, pixelSize * 1, 0, Math.PI * 2)
+  ctx.arc(bx + 8, dotY, 2, 0, Math.PI * 2)
+  ctx.arc(bx + 14, dotY, 2, 0, Math.PI * 2)
+  ctx.arc(bx + 20, dotY, 2, 0, Math.PI * 2)
   ctx.fill()
 }
 

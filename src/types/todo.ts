@@ -48,7 +48,7 @@ export interface Todo {
 
   // 额外信息
   tags?: string[]
-  requester?: string  // 请求人 - 谁求你办这件事
+  requester?: string  // 拜托人 - 谁求你办这件事
   notes?: string
 
   // 统计
