@@ -325,10 +325,10 @@ function drawTownTiles(ctx: CanvasRenderingContext2D) {
   drawSkyGradient(ctx)
 }
 
-// 街道位置常量（适配 20x16 网格）
+// 街道位置常量（适配 20x16 网格，保持区域大小与原来类似）
 const STREET_WIDTH = 50
-const H_STREETS = [TILE_SIZE * 5, TILE_SIZE * 11] // 横向街道 y 位置
-const V_STREETS = [TILE_SIZE * 5, TILE_SIZE * 14] // 纵向街道 x 位置
+const H_STREETS = [TILE_SIZE * 2, TILE_SIZE * 5, TILE_SIZE * 8, TILE_SIZE * 11, TILE_SIZE * 14] // 横向街道
+const V_STREETS = [TILE_SIZE * 2, TILE_SIZE * 5, TILE_SIZE * 8, TILE_SIZE * 11, TILE_SIZE * 14, TILE_SIZE * 17] // 纵向街道
 
 // 草地区域定义（街道围成的区域）
 function buildDistricts() {

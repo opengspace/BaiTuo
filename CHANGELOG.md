@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - 拜托小镇画布尺寸过小，大屏显示不全，扩展为视窗 2 倍并默认居中展示
+- 增加街道密度保持草地区域大小不变，避免一眼看过去只有一个大区域
 
 ## [0.3.0] - 2025-05-25
 
