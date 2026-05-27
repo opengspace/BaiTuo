@@ -5,12 +5,18 @@ import { PixelTownCanvas } from './PixelTownCanvas'
 import { CharacterDetailPanel } from './CharacterDetailPanel'
 import { ComplaintNotification } from './ComplaintNotification'
 import { useCharacters } from './hooks/useCharacters'
+import { MiniMap } from './MiniMap'
 
 export function PixelTownView() {
   const { completeTodo } = useTodoStore()
   const { init: initComplaint } = useComplaintStore()
   const characters = useCharacters()
   const [selectedCharacter, setSelectedCharacter] = useState<PixelCharacter | null>(null)
+
+  // 小地图状态
+  const [canvasOffset, setCanvasOffset] = useState({ x: 0, y: 0 })
+  const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 })
+  const [targetOffset, setTargetOffset] = useState<{ x: number; y: number } | null>(null)
 
   // 初始化 complaintStore
   useEffect(() => {
@@ -30,15 +36,35 @@ export function PixelTownView() {
     setSelectedCharacter(null)
   }
 
+  // 处理小地图点击移动
+  const handleMoveTo = (offset: { x: number; y: number }) => {
+    setTargetOffset(offset)
+    // 清空目标以避免循环触发
+    setTimeout(() => setTargetOffset(null), 600)
+  }
+
   return (
     <div className="h-full flex flex-col">
       {/* Canvas 区域 - 占满全部空间 */}
       <div className="flex-1 relative overflow-hidden">
         {characters.length > 0 ? (
-          <PixelTownCanvas
-            characters={characters}
-            onCharacterClick={handleCharacterClick}
-          />
+          <>
+            <PixelTownCanvas
+              characters={characters}
+              onCharacterClick={handleCharacterClick}
+              targetOffset={targetOffset}
+              onOffsetChange={setCanvasOffset}
+              onCanvasSizeChange={setCanvasSize}
+            />
+            {/* 小地图 */}
+            <MiniMap
+              characters={characters}
+              offset={canvasOffset}
+              canvasWidth={canvasSize.width}
+              canvasHeight={canvasSize.height}
+              onMoveTo={handleMoveTo}
+            />
+          </>
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-sky-100 to-green-100">
             <div className="text-center text-gray-400">

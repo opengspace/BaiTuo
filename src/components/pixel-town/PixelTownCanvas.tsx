@@ -6,6 +6,9 @@ import { getFrame, getFrameCount, CHARACTER_PIXEL_SIZE, CHARACTER_WIDTH, CHARACT
 interface PixelTownCanvasProps {
   characters: PixelCharacter[]
   onCharacterClick: (character: PixelCharacter) => void
+  targetOffset?: { x: number; y: number } | null
+  onOffsetChange?: (offset: { x: number; y: number }) => void
+  onCanvasSizeChange?: (size: { width: number; height: number }) => void
 }
 
 // 网格单元大小（每个区块）
@@ -20,6 +23,9 @@ const TOWN_HEIGHT = TILE_SIZE * TILE_ROWS
 export function PixelTownCanvas({
   characters,
   onCharacterClick,
+  targetOffset,
+  onOffsetChange,
+  onCanvasSizeChange,
 }: PixelTownCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -34,10 +40,30 @@ export function PixelTownCanvas({
   const lastMouseRef = useRef({ x: 0, y: 0 })
   const initialCentered = useRef(false)
 
+  // 平滑滚动动画
+  const smoothScrollRef = useRef<{
+    start: { x: number; y: number }
+    target: { x: number; y: number }
+    startTime: number
+    duration: number
+  } | null>(null)
+
   // 保持 characters 引用最新
   useEffect(() => {
     charactersRef.current = characters
   }, [characters])
+
+  // 处理外部目标偏移（平滑滚动）
+  useEffect(() => {
+    if (targetOffset) {
+      smoothScrollRef.current = {
+        start: offset,
+        target: targetOffset,
+        startTime: Date.now(),
+        duration: 500,
+      }
+    }
+  }, [targetOffset, offset])
 
   // 预渲染小镇背景（只渲染一次）
   useEffect(() => {
@@ -144,6 +170,28 @@ export function PixelTownCanvas({
       const now = Date.now()
       const elapsed = now - frameTimeRef.current
 
+      // 平滑滚动动画
+      if (smoothScrollRef.current) {
+        const progress = Math.min(1, (now - smoothScrollRef.current.startTime) / smoothScrollRef.current.duration)
+        const easeProgress = 1 - Math.pow(1 - progress, 3) // ease-out cubic
+
+        const newX = smoothScrollRef.current.start.x + (smoothScrollRef.current.target.x - smoothScrollRef.current.start.x) * easeProgress
+        const newY = smoothScrollRef.current.start.y + (smoothScrollRef.current.target.y - smoothScrollRef.current.start.y) * easeProgress
+
+        const canvas = canvasRef.current
+        const maxX = TOWN_WIDTH - (canvas?.width || 0)
+        const maxY = TOWN_HEIGHT - (canvas?.height || 0)
+
+        setOffset({
+          x: Math.max(0, Math.min(maxX, newX)),
+          y: Math.max(0, Math.min(maxY, newY)),
+        })
+
+        if (progress >= 1) {
+          smoothScrollRef.current = null
+        }
+      }
+
       if (elapsed >= 100) {
         frameTimeRef.current = now
 
@@ -178,6 +226,11 @@ export function PixelTownCanvas({
       canvas.width = container.clientWidth
       canvas.height = container.clientHeight
 
+      // 通知父组件画布尺寸变化
+      if (onCanvasSizeChange) {
+        onCanvasSizeChange({ width: canvas.width, height: canvas.height })
+      }
+
       // 首次加载时居中显示小镇
       if (!initialCentered.current) {
         initialCentered.current = true
@@ -195,7 +248,14 @@ export function PixelTownCanvas({
     updateCanvasSize()
     window.addEventListener('resize', updateCanvasSize)
     return () => window.removeEventListener('resize', updateCanvasSize)
-  }, [render])
+  }, [render, onCanvasSizeChange])
+
+  // 通知父组件 offset 变化
+  useEffect(() => {
+    if (onOffsetChange) {
+      onOffsetChange(offset)
+    }
+  }, [offset, onOffsetChange])
 
   // 拖动处理
   const handleMouseDown = (e: React.MouseEvent) => {
