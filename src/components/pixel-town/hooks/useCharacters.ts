@@ -7,16 +7,11 @@ export function useCharacters() {
   const { todos } = useTodoStore()
 
   return useMemo(() => {
-    // 获取所有未完成的待办（排除已完成和已取消，且有拜托人）
-    const pendingTodos = todos.filter(
-      t => t.status !== 'completed' && t.status !== 'cancelled' && t.requester
-    )
+    // 按拜托人分组所有待办（包括已完成、取消、未完成）
+    const requesterMap = new Map<string, typeof todos>()
 
-    // 按拜托人分组
-    const requesterMap = new Map<string, typeof pendingTodos>()
-
-    for (const todo of pendingTodos) {
-      const requester = todo.requester || '匿名'
+    for (const todo of todos) {
+      const requester = todo.requester?.trim() || '佚名'
       if (!requesterMap.has(requester)) {
         requesterMap.set(requester, [])
       }
@@ -26,27 +21,29 @@ export function useCharacters() {
     // 转换为 PixelCharacter 数组
     const characters: PixelCharacter[] = []
 
-    // 沿街道分布位置
-    // 左上区域：行 0-1，列 0-3
-    // 右上区域：行 0-1，列 4-6
-    // 左下区域：行 2-3，列 0-3
-    // 右下区域：行 2-3，列 4-6
-
     let index = 0
     for (const [name, todoList] of requesterMap.entries()) {
-      // 计算逾期信息
-      const overdueTodos = todoList.filter(t => t.dueDate && getOverdueDays(t.dueDate) > 0)
+      // 统计各状态数量
+      const completedCount = todoList.filter(t => t.status === 'completed').length
+      const cancelledCount = todoList.filter(t => t.status === 'cancelled').length
+      const pendingTodos = todoList.filter(t => t.status !== 'completed' && t.status !== 'cancelled')
+      const pendingCount = pendingTodos.length
+
+      // 计算逾期信息（仅未完成的）
+      const overdueTodos = pendingTodos.filter(t => t.dueDate && getOverdueDays(t.dueDate) > 0)
       const overdueCount = overdueTodos.length
       const overdueDays = Math.max(
         0,
-        ...todoList.map(t => t.dueDate ? getOverdueDays(t.dueDate) : 0)
+        ...pendingTodos.map(t => t.dueDate ? getOverdueDays(t.dueDate) : 0)
       )
 
-      // 计算情绪
+      // 计算情绪（基于完成、取消、未完成情况）
       const emotion = calculateEmotion({
+        completedCount,
+        cancelledCount,
+        pendingCount,
         overdueCount,
         overdueDays,
-        todoCount: todoList.length,
       })
 
       // 计算位置（根据情绪分散在不同区域）
@@ -74,7 +71,7 @@ export function useCharacters() {
       characters.push({
         id: `char-${name}`,
         name,
-        todos: todoList.map(t => t.id),
+        todos: pendingTodos.map(t => t.id),  // 只包含未完成的待办
         overdueCount,
         overdueDays,
         emotion,
