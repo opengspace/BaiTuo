@@ -71,7 +71,7 @@ export function useCharacters() {
       characters.push({
         id: `char-${name}`,
         name,
-        todos: pendingTodos.map(t => t.id),  // 只包含未完成的待办
+        todos: todoList.map(t => t.id),  // 包含所有待办（未完成 + 已完成 + 已取消）
         overdueCount,
         overdueDays,
         emotion,

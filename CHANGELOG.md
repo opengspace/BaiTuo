@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 显示所有拜托过需求的人（包括历史已完成）
   - 无拜托人名称的统一合并显示为"佚名"
   - 情绪计算基于完成率、逾期情况、取消情况
+  - 点击角色显示所有历史待办（未完成 + 已完成 + 已取消）
 
 ## [0.3.1] - 2025-05-26
 
