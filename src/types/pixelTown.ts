@@ -26,14 +26,35 @@ export interface ComplaintRecord {
   source: 'ai' | 'template' // 内容来源
 }
 
+/** AI 提供商 */
+export type AIProvider = 'openai' | 'deepseek' | 'moonshot' | 'zhipu' | 'anthropic' | 'gemini' | 'custom'
+
+/** AI 提供商预设 */
+export const AI_PROVIDER_PRESETS: Record<AIProvider, { label: string; defaultEndpoint: string; defaultModel: string }> = {
+  openai: { label: 'OpenAI', defaultEndpoint: 'https://api.openai.com/v1/chat/completions', defaultModel: 'gpt-4o-mini' },
+  deepseek: { label: 'DeepSeek', defaultEndpoint: 'https://api.deepseek.com/v1/chat/completions', defaultModel: 'deepseek-chat' },
+  moonshot: { label: 'Moonshot', defaultEndpoint: 'https://api.moonshot.cn/v1/chat/completions', defaultModel: 'moonshot-v1-8k' },
+  zhipu: { label: '智谱 GLM', defaultEndpoint: 'https://open.bigmodel.cn/api/paas/v4/chat/completions', defaultModel: 'glm-4-flash' },
+  anthropic: { label: 'Anthropic', defaultEndpoint: 'https://api.anthropic.com/v1/messages', defaultModel: 'claude-3-haiku-20240307' },
+  gemini: { label: 'Gemini', defaultEndpoint: 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', defaultModel: 'gemini-2.0-flash' },
+  custom: { label: '自定义 (OpenAI兼容)', defaultEndpoint: '', defaultModel: '' },
+}
+
 /** AI 配置 */
 export interface AIConfig {
-  id?: string             // 配置ID（存储时使用）
+  id?: string
   enabled: boolean
-  provider: 'openai' | 'anthropic' | 'custom'
+  provider: AIProvider
   apiKey: string
-  apiEndpoint?: string    // 自定义端点
-  model?: string          // 模型名称
+  apiEndpoint?: string
+  model?: string
+}
+
+/** 默认 AI 配置 */
+export const DEFAULT_AI_CONFIG: AIConfig = {
+  enabled: false,
+  provider: 'openai',
+  apiKey: '',
 }
 
 /** 情绪等级标签 */

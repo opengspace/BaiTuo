@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Modal, Switch } from '@/components/common'
-import { DailyCheckConfig, DEFAULT_DAILY_CHECK_CONFIG, QUADRANT_LABELS } from '@/types'
+import { DailyCheckConfig, DEFAULT_DAILY_CHECK_CONFIG, QUADRANT_LABELS, AIConfig, DEFAULT_AI_CONFIG, AIProvider, AI_PROVIDER_PRESETS } from '@/types'
 import { getDailyCheckConfig, updateDailyCheckConfig } from '@/services/dailyCheck'
-import { Settings, AlertTriangle } from 'lucide-react'
+import { useComplaintStore } from '@/store'
+import { Settings, AlertTriangle, Sparkles, Eye, EyeOff } from 'lucide-react'
 
 interface SettingsModalProps {
   open: boolean
@@ -11,8 +12,11 @@ interface SettingsModalProps {
 
 export function SettingsModal({ open, onClose }: SettingsModalProps) {
   const [config, setConfig] = useState<DailyCheckConfig>(DEFAULT_DAILY_CHECK_CONFIG)
+  const [aiConfig, setAiConfig] = useState<AIConfig>(DEFAULT_AI_CONFIG)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [showApiKey, setShowApiKey] = useState(false)
+  const { updateAIConfig, aiConfig: storedAiConfig } = useComplaintStore()
 
   useEffect(() => {
     if (open) {
@@ -24,12 +28,14 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
     setLoading(true)
     const loadedConfig = await getDailyCheckConfig()
     setConfig(loadedConfig)
+    setAiConfig(storedAiConfig || DEFAULT_AI_CONFIG)
     setLoading(false)
   }
 
   const handleSave = async () => {
     setSaving(true)
     await updateDailyCheckConfig(config)
+    await updateAIConfig(aiConfig)
     setSaving(false)
     onClose()
   }
@@ -64,6 +70,16 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
         ...prev.cancelledPenalty,
         [key]: value,
       },
+    }))
+  }
+
+  const handleProviderChange = (provider: AIProvider) => {
+    const preset = AI_PROVIDER_PRESETS[provider]
+    setAiConfig(prev => ({
+      ...prev,
+      provider,
+      apiEndpoint: preset.defaultEndpoint,
+      model: preset.defaultModel,
     }))
   }
 
@@ -260,6 +276,86 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
               </>
             )}
           </div>
+        </div>
+
+        {/* AI 智能配置 */}
+        <div className="p-4 bg-gray-50 rounded-lg">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-purple-500" />
+              <div>
+                <p className="font-medium">AI 智能配置</p>
+                <p className="text-xs text-gray-500">让小镇居民用 AI 生成更生动的抱怨</p>
+              </div>
+            </div>
+            <Switch
+              checked={aiConfig.enabled}
+              onChange={(checked) => setAiConfig(prev => ({ ...prev, enabled: checked }))}
+            />
+          </div>
+
+          {aiConfig.enabled && (
+            <div className="space-y-4">
+              {/* 提供商 */}
+              <div>
+                <p className="text-sm mb-1.5">AI 提供商</p>
+                <select
+                  value={aiConfig.provider}
+                  onChange={(e) => handleProviderChange(e.target.value as AIProvider)}
+                  className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white"
+                >
+                  {Object.entries(AI_PROVIDER_PRESETS).map(([key, { label }]) => (
+                    <option key={key} value={key}>{label}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* API Key */}
+              <div>
+                <p className="text-sm mb-1.5">API Key</p>
+                <div className="relative">
+                  <input
+                    type={showApiKey ? 'text' : 'password'}
+                    value={aiConfig.apiKey}
+                    onChange={(e) => setAiConfig(prev => ({ ...prev, apiKey: e.target.value }))}
+                    placeholder="输入 API Key"
+                    className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowApiKey(!showApiKey)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              {/* API 端点 */}
+              <div>
+                <p className="text-sm mb-1.5">API 端点</p>
+                <input
+                  type="text"
+                  value={aiConfig.apiEndpoint || ''}
+                  onChange={(e) => setAiConfig(prev => ({ ...prev, apiEndpoint: e.target.value }))}
+                  placeholder={AI_PROVIDER_PRESETS[aiConfig.provider].defaultEndpoint || '自定义端点'}
+                  className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2"
+                />
+              </div>
+
+              {/* 模型 */}
+              <div>
+                <p className="text-sm mb-1.5">模型</p>
+                <input
+                  type="text"
+                  value={aiConfig.model || ''}
+                  onChange={(e) => setAiConfig(prev => ({ ...prev, model: e.target.value }))}
+                  placeholder={AI_PROVIDER_PRESETS[aiConfig.provider].defaultModel || '自定义模型'}
+                  className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2"
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* 保存按钮 */}

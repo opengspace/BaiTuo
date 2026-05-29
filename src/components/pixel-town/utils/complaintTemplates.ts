@@ -1,4 +1,4 @@
-import { EmotionLevel, PixelCharacter, AIConfig } from '@/types'
+import { EmotionLevel, PixelCharacter, AIConfig, AI_PROVIDER_PRESETS } from '@/types'
 
 const templates: Record<EmotionLevel, string[]> = {
   happy: [
@@ -46,40 +46,28 @@ export async function generateComplaintContent(
 
 async function callAI(character: PixelCharacter, config: AIConfig): Promise<string> {
   const prompt = buildPrompt(character)
+  const preset = AI_PROVIDER_PRESETS[config.provider]
+  const isAnthropic = config.provider === 'anthropic'
 
-  let endpoint = config.apiEndpoint
-  const headers: Record<string, string> = {}
+  const endpoint = config.apiEndpoint || preset.defaultEndpoint
+  const model = config.model || preset.defaultModel
 
-  if (config.provider === 'openai') {
-    endpoint = endpoint || 'https://api.openai.com/v1/chat/completions'
-    headers['Authorization'] = `Bearer ${config.apiKey}`
-    headers['Content-Type'] = 'application/json'
-  } else if (config.provider === 'anthropic') {
-    endpoint = endpoint || 'https://api.anthropic.com/v1/messages'
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+
+  if (isAnthropic) {
     headers['x-api-key'] = config.apiKey
     headers['anthropic-version'] = '2023-06-01'
-    headers['Content-Type'] = 'application/json'
   } else {
-    endpoint = endpoint || ''
     headers['Authorization'] = `Bearer ${config.apiKey}`
-    headers['Content-Type'] = 'application/json'
   }
 
-  const model = config.model || (config.provider === 'openai' ? 'gpt-4o-mini' : 'claude-3-haiku-20240307')
+  const body = {
+    model,
+    max_tokens: 100,
+    messages: [{ role: 'user', content: prompt }],
+  }
 
-  const body = config.provider === 'anthropic'
-    ? {
-        model,
-        max_tokens: 100,
-        messages: [{ role: 'user', content: prompt }],
-      }
-    : {
-        model,
-        max_tokens: 100,
-        messages: [{ role: 'user', content: prompt }],
-      }
-
-  const response = await fetch(endpoint!, {
+  const response = await fetch(endpoint, {
     method: 'POST',
     headers,
     body: JSON.stringify(body),
@@ -91,7 +79,7 @@ async function callAI(character: PixelCharacter, config: AIConfig): Promise<stri
 
   const data = await response.json()
 
-  if (config.provider === 'anthropic') {
+  if (isAnthropic) {
     return data.content?.[0]?.text || generateByTemplate(character.emotion)
   }
 
