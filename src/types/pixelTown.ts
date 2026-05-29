@@ -57,6 +57,30 @@ export const DEFAULT_AI_CONFIG: AIConfig = {
   apiKey: '',
 }
 
+/** 角色性格 */
+export interface CharacterPersonality {
+  id: string              // 同角色ID: char-{name}
+  characterName: string
+  personality: string     // 性格关键词（如：急躁、傲娇、毒舌）
+  speechStyle: string    // 说话风格描述
+  catchphrase: string    // 口癖/口头禅
+  quirks: string         // 小怪癖
+  initializedAt: number
+  source: 'ai' | 'preset'
+}
+
+/** 性格预设模板（AI未配置时随机分配） */
+export const PERSONALITY_PRESETS: Omit<CharacterPersonality, 'id' | 'characterName' | 'initializedAt' | 'source'>[] = [
+  { personality: '急躁', speechStyle: '喜欢催促和命令，语气急切', catchphrase: '啧', quirks: '动不动就叹气，总觉得时间不够' },
+  { personality: '温柔', speechStyle: '喜欢用鼓励语气，说话柔和', catchphrase: '嗯', quirks: '总是先说没关系，但其实很在意' },
+  { personality: '傲娇', speechStyle: '喜欢说反话，嘴硬心软', catchphrase: '哼', quirks: '嘴上说不在乎，心里全记着' },
+  { personality: '毒舌', speechStyle: '喜欢讽刺和挖苦，一针见血', catchphrase: '呵', quirks: '每次都要损一句才觉得舒服' },
+  { personality: '幽默', speechStyle: '喜欢讲笑话和类比，化解尴尬', catchphrase: '哈', quirks: '总能用段子把气氛搞轻松' },
+  { personality: '唠叨', speechStyle: '喜欢反复提醒，不厌其烦', catchphrase: '唉', quirks: '能把一件事说三遍不嫌多' },
+  { personality: '佛系', speechStyle: '喜欢说随缘，语气淡定', catchphrase: '哦', quirks: '表面无所谓，其实什么都记着' },
+  { personality: '戏精', speechStyle: '喜欢夸张表达，小题大做', catchphrase: '天呐', quirks: '小事也能演出一出大戏' },
+]
+
 /** 情绪等级标签 */
 export const EMOTION_LABELS: Record<EmotionLevel, { label: string; emoji: string }> = {
   happy: { label: '开心', emoji: '😊' },

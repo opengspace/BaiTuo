@@ -1,8 +1,8 @@
 import { openDB, IDBPDatabase } from 'idb'
-import { Todo, ReputationRecord, NotificationRecord, NotificationSettings, ComplaintRecord, AIConfig } from '@/types'
+import { Todo, ReputationRecord, NotificationRecord, NotificationSettings, ComplaintRecord, AIConfig, CharacterPersonality } from '@/types'
 
 const DB_NAME = 'baituo-db'
-const DB_VERSION = 2
+const DB_VERSION = 3
 
 interface BaituoDBSchema {
   todos: {
@@ -47,6 +47,10 @@ interface BaituoDBSchema {
   ai_config: {
     key: string
     value: AIConfig
+  }
+  character_personality: {
+    key: string
+    value: CharacterPersonality
   }
 }
 
@@ -97,6 +101,11 @@ export async function initDB(): Promise<IDBPDatabase<BaituoDBSchema>> {
       if (!db.objectStoreNames.contains('ai_config')) {
         db.createObjectStore('ai_config', { keyPath: 'id' })
       }
+
+      // 角色性格表
+      if (!db.objectStoreNames.contains('character_personality')) {
+        db.createObjectStore('character_personality', { keyPath: 'id' })
+      }
     },
   })
 
@@ -112,12 +121,15 @@ export async function getDB(): Promise<IDBPDatabase<BaituoDBSchema>> {
 
 export async function clearDB(): Promise<void> {
   const db = await getDB()
-  const tx = db.transaction(['todos', 'reputation_records', 'notifications', 'settings'], 'readwrite')
+  const tx = db.transaction(['todos', 'reputation_records', 'notifications', 'settings', 'complaint_records', 'ai_config', 'character_personality'], 'readwrite')
   await Promise.all([
     tx.objectStore('todos').clear(),
     tx.objectStore('reputation_records').clear(),
     tx.objectStore('notifications').clear(),
     tx.objectStore('settings').clear(),
+    tx.objectStore('complaint_records').clear(),
+    tx.objectStore('ai_config').clear(),
+    tx.objectStore('character_personality').clear(),
   ])
   await tx.done
 }

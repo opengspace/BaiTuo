@@ -16,7 +16,8 @@ export function CharacterDetailPanel({
   onCompleteTodo,
 }: CharacterDetailPanelProps) {
   const { todos } = useTodoStore()
-  const { addComplaint, getComplaintsByCharacter } = useComplaintStore()
+  const { addComplaint, getComplaintsByCharacter, personalityMap } = useComplaintStore()
+  const personality = personalityMap[character.id]
   const [latestComplaint, setLatestComplaint] = useState<string>('')
   const [historyComplaints, setHistoryComplaints] = useState<any[]>([])
   const [showHistory, setShowHistory] = useState(false)
@@ -71,6 +72,16 @@ export function CharacterDetailPanel({
               ({character.overdueCount}个逾期，最长{character.overdueDays}天)
             </span>
           </div>
+
+          {/* 性格标签 */}
+          {personality && (
+            <div className="flex items-center gap-2">
+              <span className="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full font-medium">
+                {personality.personality}
+              </span>
+              <span className="text-xs text-gray-400">口癖：「{personality.catchphrase}」</span>
+            </div>
+          )}
 
           {/* 待办列表 */}
           <div>

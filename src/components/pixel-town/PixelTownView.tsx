@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { PixelCharacter } from '@/types'
 import { useTodoStore, useComplaintStore } from '@/store'
 import { PixelTownCanvas } from './PixelTownCanvas'
@@ -9,7 +9,7 @@ import { MiniMap } from './MiniMap'
 
 export function PixelTownView() {
   const { completeTodo } = useTodoStore()
-  const { init: initComplaint } = useComplaintStore()
+  const { init: initComplaint, initialized, ensurePersonality, personalityMap } = useComplaintStore()
   const characters = useCharacters()
   const [selectedCharacter, setSelectedCharacter] = useState<PixelCharacter | null>(null)
 
@@ -18,10 +18,23 @@ export function PixelTownView() {
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 })
   const [targetOffset, setTargetOffset] = useState<{ x: number; y: number } | null>(null)
 
+  const ensuredIds = useRef<Set<string>>(new Set())
+
   // 初始化 complaintStore
   useEffect(() => {
     initComplaint()
   }, [initComplaint])
+
+  // 为新角色初始化性格
+  useEffect(() => {
+    if (!initialized) return
+    for (const char of characters) {
+      if (!personalityMap[char.id] && !ensuredIds.current.has(char.id)) {
+        ensuredIds.current.add(char.id)
+        ensurePersonality(char.id, char.name)
+      }
+    }
+  }, [characters, initialized, personalityMap, ensurePersonality])
 
   const handleCharacterClick = (character: PixelCharacter) => {
     setSelectedCharacter(character)

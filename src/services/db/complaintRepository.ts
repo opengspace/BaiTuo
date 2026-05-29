@@ -1,5 +1,5 @@
 import { getDB } from './indexedDB'
-import { ComplaintRecord, AIConfig } from '@/types'
+import { ComplaintRecord, AIConfig, CharacterPersonality } from '@/types'
 import { v4 as uuidv4 } from 'uuid'
 
 export class ComplaintRepository {
@@ -69,6 +69,23 @@ export class ComplaintRepository {
     }
     await db.put('ai_config', updated as any)
     return updated
+  }
+
+  // --- Character Personality ---
+  async getPersonality(id: string): Promise<CharacterPersonality | undefined> {
+    const db = await getDB()
+    return db.get('character_personality', id)
+  }
+
+  async getAllPersonalities(): Promise<CharacterPersonality[]> {
+    const db = await getDB()
+    return db.getAll('character_personality')
+  }
+
+  async savePersonality(personality: CharacterPersonality): Promise<CharacterPersonality> {
+    const db = await getDB()
+    await db.put('character_personality', personality)
+    return personality
   }
 }
 
