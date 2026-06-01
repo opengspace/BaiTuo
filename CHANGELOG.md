@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 白色矩形框显示当前视口位置
   - 点击小地图任意位置平滑滚动视角到该位置（500ms动画）
   - 点击角色圆点快速定位到该角色
+- **AI 配置功能** - 设置页添加 AI 配置入口，支持多厂商预设
+  - 支持 OpenAI、Anthropic 等主流厂商
+  - 可配置 API Key 和自定义端点
+- **角色性格系统** - 拜托人角色自动初始化个性化性格，影响抱怨内容风格
 
 ### Changed
 - **小镇角色显示** - 所有拜托人都显示在小镇，按完成/取消/未完成情况计算心情
