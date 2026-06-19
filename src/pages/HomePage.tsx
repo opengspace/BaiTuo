@@ -21,7 +21,7 @@ export default function HomePage() {
   const { init: initReputation, addRecord, refresh } = useReputationStore()
   const { init: initComplaint } = useComplaintStore()
 
-  const [activeView, setActiveView] = useState<ViewMode>('matrix')
+  const [activeView, setActiveView] = useState<ViewMode>('pixel-town')
   const [activeQuadrant, setActiveQuadrant] = useState<Quadrant | null>(null)
   const [showTodoForm, setShowTodoForm] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
