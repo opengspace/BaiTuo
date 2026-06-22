@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
-import { Modal, Switch } from '@/components/common'
+import { Modal, Switch, Button } from '@/components/common'
 import { DailyCheckConfig, DEFAULT_DAILY_CHECK_CONFIG, QUADRANT_LABELS, AIConfig, DEFAULT_AI_CONFIG, AIProvider, AI_PROVIDER_PRESETS } from '@/types'
 import { getDailyCheckConfig, updateDailyCheckConfig } from '@/services/dailyCheck'
 import { useComplaintStore } from '@/store'
-import { Settings, AlertTriangle, Sparkles, Eye, EyeOff } from 'lucide-react'
+import { PixelGear, PixelWarn, PixelSpark, PixelEye, PixelEyeOff } from '@/components/todo/PixelIcons'
 
 interface SettingsModalProps {
   open: boolean
@@ -95,11 +95,11 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
     <Modal open={open} onClose={onClose} title="设置" size="lg">
       <div className="space-y-6">
         {/* 每日检查开关 */}
-        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+        <div className="flex items-center justify-between p-4 bg-white pixel-border-inset">
           <div className="flex items-center gap-3">
-            <Settings className="w-5 h-5 text-primary-500" />
+            <PixelGear className="w-5 h-5 text-primary-500" />
             <div>
-              <p className="font-medium">每日检查</p>
+              <p className="font-pixel">每日检查</p>
               <p className="text-xs text-gray-500">每天自动检查逾期任务并扣分</p>
             </div>
           </div>
@@ -110,10 +110,10 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
         </div>
 
         {/* 逾期扣分规则 */}
-        <div className="p-4 bg-gray-50 rounded-lg">
+        <div className="p-4 bg-white pixel-border-inset">
           <div className="flex items-center gap-2 mb-4">
-            <AlertTriangle className="w-5 h-5 text-orange-500" />
-            <p className="font-medium">逾期扣分规则</p>
+            <PixelWarn className="w-5 h-5 text-orange-500" />
+            <p className="font-pixel">逾期扣分规则</p>
           </div>
 
           <div className="space-y-4">
@@ -142,7 +142,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                     max="10"
                     value={config.overduePenalty.hourlyPenalty}
                     onChange={(e) => updateOverduePenalty('hourlyPenalty', parseInt(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-500"
+                    className="pixel-range w-full"
                   />
                 </div>
 
@@ -160,7 +160,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                     max="100"
                     value={config.overduePenalty.dailyMaxPenalty}
                     onChange={(e) => updateOverduePenalty('dailyMaxPenalty', parseInt(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-500"
+                    className="pixel-range w-full"
                   />
                 </div>
 
@@ -178,7 +178,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                     max="7"
                     value={config.overduePenalty.startAfterDays}
                     onChange={(e) => updateOverduePenalty('startAfterDays', parseInt(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-500"
+                    className="pixel-range w-full"
                   />
                 </div>
 
@@ -206,7 +206,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                             step="0.1"
                             value={multiplier}
                             onChange={(e) => updateQuadrantMultiplier(quadrant, parseFloat(e.target.value))}
-                            className="w-16 text-sm text-center border border-gray-200 rounded px-2 py-1"
+                            className="pixel-input w-16 text-sm text-center px-2 py-1"
                           />
                           <span className="text-xs text-gray-400">x</span>
                         </div>
@@ -220,10 +220,10 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
         </div>
 
         {/* 取消任务惩罚 */}
-        <div className="p-4 bg-gray-50 rounded-lg">
+        <div className="p-4 bg-white pixel-border-inset">
           <div className="flex items-center gap-2 mb-4">
-            <AlertTriangle className="w-5 h-5 text-red-500" />
-            <p className="font-medium">取消任务惩罚</p>
+            <PixelWarn className="w-5 h-5 text-red-500" />
+            <p className="font-pixel">取消任务惩罚</p>
           </div>
 
           <div className="space-y-4">
@@ -252,7 +252,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                     max="100"
                     value={config.cancelledPenalty.penaltyRate * 100}
                     onChange={(e) => updateCancelledPenalty('penaltyRate', parseInt(e.target.value) / 100)}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-500"
+                    className="pixel-range w-full"
                   />
                 </div>
 
@@ -270,7 +270,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                     max="50"
                     value={config.cancelledPenalty.maxPenalty}
                     onChange={(e) => updateCancelledPenalty('maxPenalty', parseInt(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-500"
+                    className="pixel-range w-full"
                   />
                 </div>
               </>
@@ -279,12 +279,12 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
         </div>
 
         {/* AI 智能配置 */}
-        <div className="p-4 bg-gray-50 rounded-lg">
+        <div className="p-4 bg-white pixel-border-inset">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-purple-500" />
+              <PixelSpark className="w-5 h-5 text-purple-500" />
               <div>
-                <p className="font-medium">AI 智能配置</p>
+                <p className="font-pixel">AI 智能配置</p>
                 <p className="text-xs text-gray-500">让小镇居民用 AI 生成更生动的抱怨</p>
               </div>
             </div>
@@ -298,11 +298,11 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
             <div className="space-y-4">
               {/* 提供商 */}
               <div>
-                <p className="text-sm mb-1.5">AI 提供商</p>
+                <p className="text-sm mb-1.5 font-pixel">AI 提供商</p>
                 <select
                   value={aiConfig.provider}
                   onChange={(e) => handleProviderChange(e.target.value as AIProvider)}
-                  className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white"
+                  className="pixel-select w-full text-sm px-3 py-2"
                 >
                   {Object.entries(AI_PROVIDER_PRESETS).map(([key, { label }]) => (
                     <option key={key} value={key}>{label}</option>
@@ -312,46 +312,47 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
               {/* API Key */}
               <div>
-                <p className="text-sm mb-1.5">API Key</p>
+                <p className="text-sm mb-1.5 font-pixel">API Key</p>
                 <div className="relative">
                   <input
                     type={showApiKey ? 'text' : 'password'}
                     value={aiConfig.apiKey}
                     onChange={(e) => setAiConfig(prev => ({ ...prev, apiKey: e.target.value }))}
                     placeholder="输入 API Key"
-                    className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 pr-10"
+                    className="pixel-input w-full text-sm px-3 py-2 pr-10"
                   />
                   <button
                     type="button"
                     onClick={() => setShowApiKey(!showApiKey)}
+                    aria-label={showApiKey ? '隐藏 API Key' : '显示 API Key'}
                     className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
-                    {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {showApiKey ? <PixelEyeOff className="w-4 h-4" /> : <PixelEye className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
 
               {/* API 端点 */}
               <div>
-                <p className="text-sm mb-1.5">API 端点</p>
+                <p className="text-sm mb-1.5 font-pixel">API 端点</p>
                 <input
                   type="text"
                   value={aiConfig.apiEndpoint || ''}
                   onChange={(e) => setAiConfig(prev => ({ ...prev, apiEndpoint: e.target.value }))}
                   placeholder={AI_PROVIDER_PRESETS[aiConfig.provider].defaultEndpoint || '自定义端点'}
-                  className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2"
+                  className="pixel-input w-full text-sm px-3 py-2"
                 />
               </div>
 
               {/* 模型 */}
               <div>
-                <p className="text-sm mb-1.5">模型</p>
+                <p className="text-sm mb-1.5 font-pixel">模型</p>
                 <input
                   type="text"
                   value={aiConfig.model || ''}
                   onChange={(e) => setAiConfig(prev => ({ ...prev, model: e.target.value }))}
                   placeholder={AI_PROVIDER_PRESETS[aiConfig.provider].defaultModel || '自定义模型'}
-                  className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2"
+                  className="pixel-input w-full text-sm px-3 py-2"
                 />
               </div>
             </div>
@@ -360,19 +361,12 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
         {/* 保存按钮 */}
         <div className="flex justify-end gap-3">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
-          >
+          <Button variant="ghost" onClick={onClose}>
             取消
-          </button>
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="px-4 py-2 text-sm bg-primary-500 text-white rounded-lg hover:bg-primary-600 disabled:opacity-50"
-          >
+          </Button>
+          <Button variant="primary" onClick={handleSave} disabled={saving}>
             {saving ? '保存中...' : '保存设置'}
-          </button>
+          </Button>
         </div>
       </div>
     </Modal>

@@ -1,6 +1,6 @@
 import { cn } from '@/utils'
-import { X } from 'lucide-react'
 import { useEffect, useRef } from 'react'
+import { PixelXClose } from '@/components/todo/PixelIcons'
 
 interface ModalProps {
   open: boolean
@@ -37,19 +37,20 @@ export function Modal({ open, onClose, title, children, size = 'md' }: ModalProp
       <div
         ref={ref}
         className={cn(
-          'relative bg-white rounded-xl shadow-xl p-6 w-full mx-4',
+          'relative bg-white pixel-border p-6 w-full mx-4',
           'max-h-[85vh] overflow-y-auto',
           sizes[size]
         )}
       >
         {title && (
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">{title}</h2>
+            <h2 className="text-lg font-pixel">{title}</h2>
             <button
               onClick={onClose}
+              aria-label="关闭"
               className="text-gray-400 hover:text-gray-600 transition-colors"
             >
-              <X className="w-5 h-5" />
+              <PixelXClose className="w-5 h-5" />
             </button>
           </div>
         )}

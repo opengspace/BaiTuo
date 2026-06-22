@@ -33,6 +33,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 拖拽 DragOverlay 带像素残影（scale + 微旋转）
   - 象限空状态用像素虚线边框，拖拽悬停时像素闪烁高亮
   - 保留 dnd-kit 完整拖拽与排序能力，无功能回退
+- **全应用像素化扩展** - 侧边导航、顶部 Header、设置弹窗统一像素风，通用组件升级带动全应用风格统一
+  - 通用组件 Button / Switch / Modal 像素化：方形边框、`font-pixel` 字体、按压反馈、方形 Switch thumb
+  - 侧边栏：导航项激活态黑底白字像素方块、象限色点改方块、统计块像素内边框、成就按钮 RPG 风格
+  - 顶部 Header：像素边框分隔、信誉值徽章变 primary 实色像素方块、操作按钮全换像素图标
+  - 设置弹窗：4 个分区卡片用 `pixel-border-inset`，range slider / input / select 均用像素样式（含聚焦双层高亮、像素三角下拉箭头、WebKit + Firefox 滑块样式）
+  - 新增 15 个 8×8 像素 SVG 图标（PixelHome/Grid/List/Cal/Check2/X/Trophy/Download/Upload/Gear/Warn/Spark/Eye/EyeOff/XClose）
+  - 新增 `.pixel-input` / `.pixel-select` / `.pixel-range` CSS 工具类
 
 ## [0.3.1] - 2025-05-26
 
