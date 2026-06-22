@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Modal, Button } from '@/components/common'
 import { cn } from '@/utils'
 import { Quadrant, Priority, Difficulty, QUADRANT_BASE_SCORE, DIFFICULTY_MULTIPLIER, CreateTodoInput, Todo } from '@/types'
-import { Clock, User } from 'lucide-react'
+import { PixelClock, PixelUser } from './PixelIcons'
 
 interface TodoFormProps {
   open: boolean
@@ -44,10 +44,10 @@ export function TodoForm({ open, onClose, onSubmit, defaultQuadrant, editTodo }:
   }, [open, editTodo, defaultQuadrant])
 
   const quadrantOptions: { value: Quadrant; label: string; color: string }[] = [
-    { value: 'urgent-important', label: '重要紧急', color: 'bg-red-500' },
-    { value: 'not-urgent-important', label: '重要不紧急', color: 'bg-yellow-500' },
-    { value: 'urgent-not-important', label: '不重要紧急', color: 'bg-blue-500' },
-    { value: 'not-urgent-not-important', label: '不重要不紧急', color: 'bg-gray-500' },
+    { value: 'urgent-important', label: '重要紧急', color: 'bg-[#ef4444]' },
+    { value: 'not-urgent-important', label: '重要不紧急', color: 'bg-[#f59e0b]' },
+    { value: 'urgent-not-important', label: '不重要紧急', color: 'bg-[#3b82f6]' },
+    { value: 'not-urgent-not-important', label: '不重要不紧急', color: 'bg-[#6b7280]' },
   ]
 
   const difficultyOptions: { value: Difficulty; label: string; multiplier: number }[] = [
@@ -89,32 +89,32 @@ export function TodoForm({ open, onClose, onSubmit, defaultQuadrant, editTodo }:
     <Modal open={open} onClose={onClose} title={editTodo ? '编辑待办' : '添加待办'} size="md">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-pixel text-gray-700 mb-1">
             标题 <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="pixel-input w-full px-3 py-2"
             placeholder="待办事项..."
             autoFocus
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">描述</label>
+          <label className="block text-sm font-pixel text-gray-700 mb-1">描述</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+            className="pixel-input w-full px-3 py-2 resize-none"
             rows={2}
             placeholder="详细说明..."
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">分类维度</label>
+          <label className="block text-sm font-pixel text-gray-700 mb-2">分类维度</label>
           <div className="grid grid-cols-2 gap-2">
             {quadrantOptions.map((opt) => (
               <button
@@ -122,20 +122,20 @@ export function TodoForm({ open, onClose, onSubmit, defaultQuadrant, editTodo }:
                 type="button"
                 onClick={() => setQuadrant(opt.value)}
                 className={cn(
-                  'flex items-center gap-2 px-3 py-2 rounded-lg border-2 transition-colors',
+                  'flex items-center gap-2 px-3 py-2 pixel-border transition-colors font-pixel',
                   quadrant === opt.value
-                    ? `${opt.color} text-white border-transparent`
-                    : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
+                    ? `${opt.color} text-white`
+                    : 'bg-white text-gray-700 hover:bg-gray-100'
                 )}
               >
-                <span className="font-medium">{opt.label}</span>
+                <span>{opt.label}</span>
               </button>
             ))}
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">难度</label>
+          <label className="block text-sm font-pixel text-gray-700 mb-2">难度</label>
           <div className="flex gap-2">
             {difficultyOptions.map((opt) => (
               <button
@@ -143,10 +143,10 @@ export function TodoForm({ open, onClose, onSubmit, defaultQuadrant, editTodo }:
                 type="button"
                 onClick={() => setDifficulty(opt.value)}
                 className={cn(
-                  'px-4 py-2 rounded-lg text-sm transition-colors',
+                  'px-4 py-2 text-sm font-pixel pixel-border transition-colors',
                   difficulty === opt.value
                     ? 'bg-primary-500 text-white'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    : 'bg-white text-gray-700 hover:bg-gray-100'
                 )}
               >
                 {opt.label} ({opt.multiplier}x)
@@ -156,35 +156,35 @@ export function TodoForm({ open, onClose, onSubmit, defaultQuadrant, editTodo }:
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            <User className="w-3 h-3 inline mr-1" />
+          <label className="block text-sm font-pixel text-gray-700 mb-1">
+            <PixelUser className="w-3 h-3 inline mr-1" />
             拜托人（谁求你办这件事）
           </label>
           <input
             type="text"
             value={requester}
             onChange={(e) => setRequester(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="pixel-input w-full px-3 py-2"
             placeholder="例如：张三、老板..."
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            <Clock className="w-3 h-3 inline mr-1" />
+          <label className="block text-sm font-pixel text-gray-700 mb-1">
+            <PixelClock className="w-3 h-3 inline mr-1" />
             截止时间
           </label>
           <input
             type="datetime-local"
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="pixel-input w-full px-3 py-2"
           />
         </div>
 
-        <div className="flex items-center justify-between py-3 px-4 bg-primary-50 rounded-lg">
-          <span className="text-sm text-gray-600">完成可获得</span>
-          <span className="font-bold text-primary-600">+{calculateReputation()} 信誉</span>
+        <div className="flex items-center justify-between py-3 px-4 bg-primary-500 text-white pixel-border-inset">
+          <span className="text-sm font-pixel">完成可获得</span>
+          <span className="font-pixel">+{calculateReputation()} 信誉</span>
         </div>
 
         <div className="flex justify-end gap-2 pt-2">

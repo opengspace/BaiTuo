@@ -231,20 +231,20 @@ export default function HomePage() {
           {activeView !== 'matrix' && activeView !== 'pixel-town' && (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-                  <h2 className="font-semibold mb-4">
+                <div className="bg-white pixel-border p-4">
+                  <h2 className="font-pixel text-lg mb-4">
                     {activeView === 'list' ? '全部待办' :
                      activeView === 'today' ? '今日待办' :
                      activeView === 'completed' ? '已完成' : '已取消'}
                   </h2>
 
                   {displayTodos.length === 0 ? (
-                    <div className="text-center text-gray-400 py-12">
-                      <p>{activeView === 'cancelled' ? '暂无已取消的待办' : '暂无待办'}</p>
+                    <div className="pixel-dashed text-center text-gray-500 py-12">
+                      <p className="font-pixel">{activeView === 'cancelled' ? '暂无已取消的待办' : '暂无待办'}</p>
                       {activeView !== 'cancelled' && (
                         <button
                           onClick={() => handleAddTodo('not-urgent-important')}
-                          className="mt-4 text-primary-500 hover:text-primary-600"
+                          className="mt-4 text-primary-500 hover:text-primary-600 font-pixel"
                         >
                           添加待办
                         </button>
@@ -255,18 +255,18 @@ export default function HomePage() {
                       {displayTodos.map(todo => (
                         <div
                           key={todo.id}
-                          className="p-3 bg-gray-50 rounded-lg flex items-center justify-between"
+                          className="p-3 bg-white pixel-border-inset flex items-center justify-between"
                         >
                           <div className="flex-1">
-                            <p className="font-medium">{todo.title}</p>
+                            <p className="font-pixel">{todo.title}</p>
                             <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
-                              <span>{todo.quadrant}</span>
+                              <span className="font-pixel">{todo.quadrant}</span>
                               {todo.requester && <span>来自: {todo.requester}</span>}
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
                             <span className={cn(
-                              'text-xs',
+                              'text-xs font-pixel',
                               activeView === 'cancelled' ? 'text-red-500' : 'text-primary-500'
                             )}>
                               {activeView === 'cancelled' ? '已取消' : `+${todo.reputationValue}`}
@@ -274,7 +274,7 @@ export default function HomePage() {
                             {activeView === 'cancelled' && (
                               <button
                                 onClick={() => handleRestoreTodo(todo.id)}
-                                className="text-xs text-primary-500 hover:text-primary-600"
+                                className="text-xs text-primary-500 hover:text-primary-600 font-pixel"
                               >
                                 恢复
                               </button>
@@ -282,7 +282,7 @@ export default function HomePage() {
                             {todo.status !== 'completed' && todo.status !== 'cancelled' && (
                               <button
                                 onClick={() => handleCompleteTodo(todo.id)}
-                                className="text-xs text-green-500 hover:text-green-600"
+                                className="text-xs text-green-500 hover:text-green-600 font-pixel"
                               >
                                 完成
                               </button>

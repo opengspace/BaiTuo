@@ -254,3 +254,89 @@ export const PixelEyeOff = baseSvg(
 )
 
 export const PixelXClose = PixelX
+
+export const PixelFlame = baseSvg(
+  <>
+    <rect x="3" y="0" width="2" height="1" />
+    <rect x="2" y="1" width="4" height="1" />
+    <rect x="1" y="2" width="2" height="2" />
+    <rect x="5" y="2" width="2" height="2" />
+    <rect x="2" y="2" width="4" height="2" fill="#fff" />
+    <rect x="2" y="4" width="4" height="2" />
+    <rect x="1" y="4" width="1" height="2" />
+    <rect x="6" y="4" width="1" height="2" />
+    <rect x="2" y="6" width="4" height="1" />
+    <rect x="3" y="7" width="2" height="1" />
+    <rect x="3" y="5" width="2" height="1" fill="#fff" />
+  </>
+)
+
+export const PixelTarget = baseSvg(
+  <>
+    <rect x="0" y="2" width="8" height="4" />
+    <rect x="2" y="0" width="4" height="2" />
+    <rect x="2" y="6" width="4" height="2" />
+    <rect x="2" y="2" width="4" height="4" fill="#fff" />
+    <rect x="3" y="3" width="2" height="2" />
+  </>
+)
+
+export const PixelTrending = baseSvg(
+  <>
+    <rect x="0" y="6" width="2" height="2" />
+    <rect x="2" y="4" width="2" height="2" />
+    <rect x="4" y="2" width="2" height="2" />
+    <rect x="6" y="0" width="2" height="2" />
+    <rect x="0" y="6" width="8" height="1" fill="#fff" />
+    <rect x="0" y="6" width="2" height="2" />
+    <rect x="2" y="4" width="2" height="2" />
+    <rect x="4" y="2" width="2" height="2" />
+    <rect x="6" y="0" width="2" height="2" />
+  </>
+)
+
+export const PixelChevron = baseSvg(
+  <>
+    <rect x="5" y="2" width="1" height="1" />
+    <rect x="6" y="3" width="1" height="1" />
+    <rect x="5" y="4" width="1" height="1" />
+    <rect x="4" y="5" width="1" height="1" />
+  </>
+)
+
+export const PixelChevronLeft = baseSvg(
+  <>
+    <rect x="2" y="2" width="1" height="1" />
+    <rect x="1" y="3" width="1" height="1" />
+    <rect x="2" y="4" width="1" height="1" />
+    <rect x="3" y="5" width="1" height="1" />
+  </>
+)
+
+export const PixelArrowLeft = baseSvg(
+  <>
+    <rect x="0" y="3" width="2" height="2" />
+    <rect x="2" y="2" width="1" height="1" />
+    <rect x="2" y="5" width="1" height="1" />
+    <rect x="3" y="1" width="1" height="1" />
+    <rect x="3" y="6" width="1" height="1" />
+    <rect x="3" y="3" width="5" height="2" />
+  </>
+)
+
+export const PixelStar = baseSvg(
+  <>
+    <rect x="3" y="0" width="2" height="1" />
+    <rect x="2" y="1" width="1" height="1" />
+    <rect x="5" y="1" width="1" height="1" />
+    <rect x="1" y="2" width="6" height="1" />
+    <rect x="0" y="3" width="8" height="1" />
+    <rect x="1" y="4" width="6" height="1" />
+    <rect x="2" y="5" width="1" height="1" />
+    <rect x="5" y="5" width="1" height="1" />
+    <rect x="2" y="6" width="1" height="1" />
+    <rect x="5" y="6" width="1" height="1" />
+    <rect x="1" y="7" width="1" height="1" />
+    <rect x="6" y="7" width="1" height="1" />
+  </>
+)

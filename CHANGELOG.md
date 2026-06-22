@@ -40,6 +40,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 设置弹窗：4 个分区卡片用 `pixel-border-inset`，range slider / input / select 均用像素样式（含聚焦双层高亮、像素三角下拉箭头、WebKit + Firefox 滑块样式）
   - 新增 15 个 8×8 像素 SVG 图标（PixelHome/Grid/List/Cal/Check2/X/Trophy/Download/Upload/Gear/Warn/Spark/Eye/EyeOff/XClose）
   - 新增 `.pixel-input` / `.pixel-select` / `.pixel-range` CSS 工具类
+- **列表视图与剩余页面像素化** - 补齐 list/today/completed/cancelled 四视图、待办表单、信誉卡、成就明细页
+  - HomePage 内联列表：卡片 `pixel-border`、列表项 `pixel-border-inset`、空状态 `pixel-dashed`、标题与数值 `font-pixel`
+  - ReputationCard + AchievementList：像素边框、`pixel-border-inset` 进度条与统计块、成就项像素方块、lucide 图标全换 Pixel
+  - TodoForm：input/textarea 用 `pixel-input`、象限/难度选择按钮 `pixel-border`、信誉预览 `pixel-border-inset`
+  - ReputationDetailPage：header 像素边框、汇总卡 `pixel-border`、记录项 `pixel-border-inset`、筛选 `pixel-select`、分页按钮 `pixel-border`
+  - 新增 7 个像素图标（PixelFlame/Target/Trending/Chevron/ChevronLeft/ArrowLeft/Star）
 
 ## [0.3.1] - 2025-05-26
 
