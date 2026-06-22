@@ -105,11 +105,13 @@ export function MatrixGrid({
 
       <DragOverlay>
         {activeTodo && (
-          <TodoCard
-            todo={activeTodo}
-            isDragging
-            draggable={false}
-          />
+          <div className="opacity-90 scale-105 transform -rotate-1">
+            <TodoCard
+              todo={activeTodo}
+              isDragging
+              draggable={false}
+            />
+          </div>
         )}
       </DragOverlay>
     </DndContext>

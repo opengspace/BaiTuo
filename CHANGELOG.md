@@ -25,6 +25,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 无拜托人名称的统一合并显示为"佚名"
   - 情绪计算基于完成率、逾期情况、取消情况
   - 点击角色显示所有历史待办（未完成 + 已完成 + 已取消）
+- **四象限矩阵视图像素化** - 与拜托小镇视觉风格统一，告别千篇一律的待办应用 UI
+  - 象限头部改为 RPG 招牌样式（像素边框 + ZCOOL KuaiLe 像素字体 + 黑底白字计数方块）
+  - 待办卡片改为像素告示牌风格：阶梯 box-shadow 像素边框、左侧象限色条、像素金币信誉值
+  - 新增 6 个 8×8 像素 SVG 图标（PixelClock/User/Check/More/Plus/Coin）替换 lucide 线性图标
+  - 难度标签改为纯色像素方块，完成按钮为绿色像素按钮
+  - 拖拽 DragOverlay 带像素残影（scale + 微旋转）
+  - 象限空状态用像素虚线边框，拖拽悬停时像素闪烁高亮
+  - 保留 dnd-kit 完整拖拽与排序能力，无功能回退
 
 ## [0.3.1] - 2025-05-26
 
