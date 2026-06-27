@@ -6,6 +6,26 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
 ![Vite](https://img.shields.io/badge/Vite-5-purple)
 
+## 📸 项目截图
+
+### 拜托小镇
+
+把每一条待办变成像素小人在小镇中生活，根据完成情况自动计算情绪。
+
+![拜托小镇](./docs/pixel-town.png)
+
+### 四象限矩阵
+
+艾森豪威尔矩阵的像素化呈现，告别千篇一律的待办应用 UI。
+
+![四象限矩阵](./docs/matrix-view.png)
+
+### 成就明细
+
+记录每一次信誉变化的来龙去脉，支持按类型筛选与分页。
+
+![成就明细](./docs/reputation-detail.png)
+
 ## 🎯 项目理念
 
 **拜托**是一个独特的待办管理应用。它把传统的"待办事项"转换成"别人求你办的事"。
